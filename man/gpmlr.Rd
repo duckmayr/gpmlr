@@ -6,8 +6,9 @@
 \alias{gpmlr-package}
 \title{gpmlr}
 \description{
-Allows the GPML (Gaussian Processes for Machine Learning) Matlab algorithms
-to be called from R, using R syntax and data structures.
+Allows the 'GPML' (Gaussian Processes for Machine Learning) Matlab function
+for Gaussian process inference and prediction to be called from R, using R
+syntax and data structures.
 }
 \author{
 JB Duck-Mayr
