@@ -3,7 +3,7 @@ Title: R Tools for Calling the 'GPML' toolkit's Matlab functions for Gaussian pr
 Version: 0.0.0.9000
 Authors@R: person("JB", "Duck-Mayr", email = "j.duckmayr@gmail.com", role = c("aut", "cre"))
 Description: Allows the 'GPML' (Gaussian Processes for Machine Learning) Matlab function for Gaussian process inference and prediction to be called from R, using R syntax and data structures.
-Depends: R (>= 3.4.4)
+Depends: R (>= 3.4.0)
 License: GPL (>= 2.0)
 Encoding: UTF-8
 LazyData: true

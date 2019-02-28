@@ -71,6 +71,7 @@ bool embed_octave(bool verbose, bool force) {
 // [[Rcpp::export(.exit_octave)]]
 bool exit_octave(bool verbose) {
     if ( octave_is_embedded() ) {
+        symbol_table::clear_all(true);
         octave_exit = 0;
         is_octave_embedded = false;
         if ( verbose ) {

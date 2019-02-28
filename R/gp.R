@@ -54,7 +54,7 @@ gp <- function(hyp, inf, mean, cov, lik, x, y, xs, ys) {
         sub_dirs <- c("cov", "doc", "inf", "lik", "mean", "prior", "util")
         dirs_to_add <- system.file(paste0("gpml", c("", paste0("/", sub_dirs))),
                                    package = "gpmlr")
-        .add_to_path(paths_to_add)
+        .add_to_path(dirs_to_add)
     }
     if ( missing(xs) ) {
         return(.gpml1(hyp, inf, mean, cov, lik, x, y))
