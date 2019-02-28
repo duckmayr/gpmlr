@@ -2,6 +2,11 @@
 #'
 #' \code{gp} allows the user to call GPML's Matlab function for Gaussian
 #' process inference and prediction.
+#' 
+#' GPML provides several inference methods, as well as several mean,
+#' covariance, and likelihood functions to be used in its \code{gp()}
+#' Matlab function. Their detailed manual is available at
+#' \url{http://www.gaussianprocess.org/gpml/code/matlab/doc/manual.pdf}.
 #'
 #' @param hyp A list of length three giving the hyperparameters for the mean,
 #'   covariance, and likelihood functions
@@ -22,17 +27,21 @@
 #'   function call:
 #'   \itemize{
 #'       \item If called in training mode, that is, with y, xs, and ys missing,
-#'           the returned list has two elements: NLZ, the negative log marginal
-#'           likelihood, and DNLZ, a list of vectors giving the partial
+#'           the returned list has three elements: NLZ, the negative log
+#'           marginal likelihood, DNLZ, a list of vectors giving the partial
 #'           derivatives of the negative log marginal likelihood with respect
-#'           to the mean, covariance, and likelihood parameters.
+#'           to the mean, covariance, and likelihood parameters, and POST,
+#'           a list of three elements, alpha, sW, and L, giving a
+#'           representation of the approximate posterior.
 #'       \item If called in prediction mode with xs supplied by ys missing,
-#'           the returned list has four elements: a vector YMU giving the
+#'           the returned list has five elements: a vector YMU giving the
 #'           predictive output means, a vector YS2 giving the predictive
 #'           output variances, a vector FMU giving the predictive latent means,
-#'           and a vector FS2 giving the perdictive latent variances.
+#'           a vector FS2 giving the perdictive latent variances, and POST,
+#'           a list of three elements, alpha, sW, and L, giving a
+#'           representation of the approximate posterior.
 #'       \item If called in prediction mode with all arguments supplied,
-#'           the returned list has five elements: the four elements given when
+#'           the returned list has six elements: the five elements given when
 #'           ys is missing, as well as a vector LP of logged predictive
 #'           probabilities.
 #'   }

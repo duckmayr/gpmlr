@@ -27,29 +27,19 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
     in(4) = octave_value(likfunc);
     in(5) = octave_value(octave_x);
     in(6) = octave_value(octave_y);
-    octave_value_list octave_result = feval("gp", in, 1);
+    octave_value_list octave_result = feval("gp", in, 2);
     int N = octave_result.length();
     ColumnVector NLZ = octave_result(0).column_vector_value();
     Rcpp::NumericVector nlz = octave_matrix_to_rcpp(NLZ);
-    octave_value last_object = octave_result(N-1);
-    /*
-    bool last_object_is_map = last_object.is_map();
-    bool last_object_is_cell = last_object.is_cell();
-    if ( last_object_is_map ) {
-        Rcpp::Rcout << "The last object is a map.\n";
-    }
-    else if ( last_object_is_cell ) {
-        Rcpp::Rcout << "The last object is a cell.\n";
-    }
-    else {
-        std::string class_name = last_object.class_name();
-        Rcpp::Rcout << "The last object is a " << class_name << ".\n";
-    }
-    */
-    octave_scalar_map DNLZ = last_object.scalar_map_value();
+    octave_value tmp = octave_result(1);
+    octave_scalar_map DNLZ = tmp.scalar_map_value();
     Rcpp::List dnlz = octave_map_to_rcpp(DNLZ);
+    tmp = octave_result(2);
+    octave_scalar_map POST = tmp.scalar_map_value();
+    Rcpp::List post = octave_map_to_rcpp(POST);
     return Rcpp::List::create(Rcpp::_["NLZ"] = nlz,
-                              Rcpp::_["DNLZ"] = dnlz);
+                              Rcpp::_["DNLZ"] = dnlz,
+                              Rcpp::_["POST"] = post);
 }
 
 // Second usage: prediction.
@@ -90,10 +80,15 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
     Rcpp::NumericVector fmu = octave_matrix_to_rcpp(FMU);
     ColumnVector FS2 = octave_result(3).column_vector_value();
     Rcpp::NumericVector fs2 = octave_matrix_to_rcpp(FS2);
+    // The fifth value (element 4) will be empty
+    octave_value tmp = octave_result(5);
+    octave_scalar_map POST = tmp.scalar_map_value();
+    Rcpp::List post = octave_map_to_rcpp(POST);
     return Rcpp::List::create(Rcpp::_["YMU"] = ymu,
                               Rcpp::_["YS2"] = ys2,
                               Rcpp::_["FMU"] = fmu,
-                              Rcpp::_["FS2"] = fs2);
+                              Rcpp::_["FS2"] = fs2,
+                              Rcpp::_["POST"] = post);
 }
 
 // Third usage: prediction.
@@ -139,10 +134,14 @@ Rcpp::List gpml3(Rcpp::List hyperparameters,
     Rcpp::NumericVector fs2 = octave_matrix_to_rcpp(FS2);
     ColumnVector LP = octave_result(4).column_vector_value();
     Rcpp::NumericVector lp = octave_matrix_to_rcpp(LP);
+    octave_value tmp = octave_result(5);
+    octave_scalar_map POST = tmp.scalar_map_value();
+    Rcpp::List post = octave_map_to_rcpp(POST);
     return Rcpp::List::create(Rcpp::_["YMU"] = ymu,
                               Rcpp::_["YS2"] = ys2,
                               Rcpp::_["FMU"] = fmu,
                               Rcpp::_["FS2"] = fs2,
-                              Rcpp::_["LP"] = lp);
+                              Rcpp::_["LP"] = lp,
+                              Rcpp::_["POST"] = post);
 }
 
