@@ -7,6 +7,7 @@ Depends: R (>= 3.4.0)
 License: GPL (>= 2.0)
 Encoding: UTF-8
 LazyData: true
+SystemRequirements: C++11, Octave
 LinkingTo: 
     Rcpp
 Imports: 
