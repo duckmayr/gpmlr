@@ -1,5 +1,8 @@
 # gpmlr
 
+[![Travis build status](https://travis-ci.org/duckmayr/gpmlr.svg?branch=master)](https://travis-ci.org/duckmayr/gpmlr)
+[![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
+
 **gpmlr** allows the [`GPML`](http://www.gaussianprocess.org/gpml/code/matlab/doc/) (Gaussian Processes for Machine Learning) toolbox Matlab function for Gaussian process inference and prediction to be called from R, using R syntax and data structures.
 
 ## Installation
