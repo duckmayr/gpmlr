@@ -4,6 +4,8 @@
 #include <Rcpp.h>
 #include <octave/oct.h> // For basic Octave types
 #include <octave/ov-struct.h> // For octave_map
+#include <octave/parse.h> // To call M files
+#include "define-version.h"
 
 
 // ----------------------- Octave embedding ----------------------------------
@@ -15,19 +17,34 @@ bool embed_octave(bool verbose = true, bool force = false);
 bool exit_octave(bool verbose = true);
 
 
+// ------------------- Calling Octave functions ------------------------------
+// The Octave C++ API provides the function feval() to call Octave functions.
+// Eventually they move it to the Octave namespace.
+// So, we define our own OCT() function that calls octave::feval()
+// for some Octave versions and feval() otherwise.
+#ifdef OCTAVE_4_4_OR_HIGHER
+    inline octave_value_list OCT(const std::string& name,
+                                 const octave_value_list& args = octave_value_list(),
+                                 int nargout = 0) {
+        return octave::feval(name, args, nargout);
+    }
+#else
+    inline octave_value_list OCT(const std::string& name,
+                                 const octave_value_list& args = octave_value_list(),
+                                 int nargout = 0) {
+        return feval(name, args, nargout);
+    }
+#endif
+
+
 // ------------- Viewing and manipulating Octave's load path -----------------
 // Prints the Octave load path:
 void print_path();
 // Adds directories to the Octave load path:
 void add_to_path(Rcpp::StringVector x);
 
+
 // ------------ Converting data between Octave and Rcpp types ----------------
-/*
-Rcpp::NumericMatrix octave_matrix_to_rcpp(const Matrix& x);
-Matrix rcpp_matrix_to_octave(const Rcpp::NumericMatrix& x);
-Rcpp::NumericVector octave_vector_to_rcpp(const ColumnVector& x);
-ColumnVector rcpp_vector_to_octave(const Rcpp::NumericVector& x);
-*/
 Rcpp::NumericVector octave_matrix_to_rcpp(const Matrix& x);
 Matrix rcpp_matrix_to_octave(const Rcpp::NumericVector& x);
 octave_map list_to_map(const Rcpp::List& x);

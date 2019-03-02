@@ -1,6 +1,7 @@
 #include <Rcpp.h>
 #include <oct.h> // For basic Octave types
 #include <ov-struct.h> // For octave_map
+#include "define-version.h" // To handle Octave version differences
 
 // CONVERSIONS BETWEEN MATRICES
 
@@ -60,7 +61,11 @@ Rcpp::List octave_map_to_rcpp(const octave_scalar_map& x) {
     // FIXME: Compiles fine, but when called from gpml1(), we get
     // error: octave_base_value::map_value(): wrong type argument 'cell'
     string_vector octave_xnames = x.fieldnames();
-    int n = octave_xnames.nelem();
+    #ifdef OCTAVE_4_4_OR_HIGHER
+        int n = octave_xnames.numel();
+    #else
+        int n = octave_xnames.length();
+    #endif
     Rcpp::List result(n);
     Rcpp::CharacterVector rcpp_names(n);
     for ( int i = 0; i < n; ++i ) {

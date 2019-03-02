@@ -1,12 +1,12 @@
 #include <Rcpp.h>
 #include <octave/oct.h> // For basic Octave types
 #include <octave/octave.h> // For octave_main or interpreter class (embedding)
-#include <octave/version.h> // We need to do different things for Octave 4.2 or later than Octave < 4.2
-#if OCTAVE_MAJOR_VERSION >= 4 && OCTAVE_MINOR_VERSION >= 2
+#include "define-version.h" // To handle Octave version differences
+#ifdef OCTAVE_4_2_OR_HIGHER
     #include <octave/interpreter.h> // To exit embedded Octave
 #else
     #include <octave/toplev.h> // To exit embedded Octave
-#endif // Octave version >= 4.2.0
+#endif
 #include <octave/symtab.h>
 
 // These variables will keep track for us whether Octave is
@@ -53,15 +53,23 @@ bool embed_octave(bool verbose, bool force) {
         string_vector embed_args(n_args);
         embed_args(0) = "gpmlr"; // The name of our application
         embed_args(1) = "-q"; // We want to embed quietly
-        #if OCTAVE_MAJOR_VERSION >= 4 && OCTAVE_MINOR_VERSION >= 2
-            octave::cmdline_options embed_opts(n_args, embed_args.c_str_vec());
-            static octave::embedded_application interpreter(embed_opts);
-            interpreter.execute();
+        #ifdef OCTAVE_4_2_OR_HIGHER
+            #ifdef OCTAVE_4_4_OR_HIGHER
+                char** dummy_options;
+                octave_main(0, dummy_options, true);
+            #else
+                octave::cmdline_options opts(n_args, embed_args.c_str_vec());
+                static octave::embedded_application interpreter(opts);
+                interpreter.execute();
+            #endif
         #else
-            octave_main(n_args, embed_args.c_str_vec(), 1);
+            octave_main(n_args, embed_args.c_str_vec(), true);
         #endif
         is_octave_embedded = true;
         octave_has_ever_been_embedded = true;
+    }
+    if ( verbose && octave_is_embedded() ) {
+        Rcpp::Rcout << "Octave embedded.\n";
     }
     return is_octave_embedded;
 }
@@ -71,8 +79,12 @@ bool embed_octave(bool verbose, bool force) {
 // [[Rcpp::export(.exit_octave)]]
 bool exit_octave(bool verbose) {
     if ( octave_is_embedded() ) {
-        symbol_table::clear_all(true);
-        octave_exit = 0;
+        #ifdef OCTAVE_4_4_OR_HIGHER
+            octave_quit();
+        #else
+            symbol_table::clear_all(true);
+            octave_exit = 0;
+        #endif
         is_octave_embedded = false;
         if ( verbose ) {
             Rcpp::Rcout << "Exited Octave.\n";

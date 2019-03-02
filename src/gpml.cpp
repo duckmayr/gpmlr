@@ -1,5 +1,4 @@
 #include "gpmlr.h"
-#include <octave/parse.h> // To call M files
 
 // First usage: training.
 // Returns "the negative log marginal likelihood" and "a struct of column 
@@ -27,7 +26,7 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
     in(4) = octave_value(likfunc);
     in(5) = octave_value(octave_x);
     in(6) = octave_value(octave_y);
-    octave_value_list octave_result = feval("gp", in, 2);
+    octave_value_list octave_result = OCT("gp", in, 2);
     int N = octave_result.length();
     ColumnVector NLZ = octave_result(0).column_vector_value();
     Rcpp::NumericVector nlz = octave_matrix_to_rcpp(NLZ);
@@ -71,7 +70,7 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
     in(5) = octave_value(octave_training_x);
     in(6) = octave_value(octave_training_y);
     in(7) = octave_value(octave_testing_x);
-    octave_value_list octave_result = feval("gp", in, 1);
+    octave_value_list octave_result = OCT("gp", in, 1);
     ColumnVector YMU = octave_result(0).column_vector_value();
     Rcpp::NumericVector ymu = octave_matrix_to_rcpp(YMU);
     ColumnVector YS2 = octave_result(1).column_vector_value();
@@ -123,7 +122,7 @@ Rcpp::List gpml3(Rcpp::List hyperparameters,
     in(6) = octave_value(octave_training_y);
     in(7) = octave_value(octave_testing_x);
     in(8) = octave_value(octave_testing_y);
-    octave_value_list octave_result = feval("gp", in, 1);
+    octave_value_list octave_result = OCT("gp", in, 1);
     ColumnVector YMU = octave_result(0).column_vector_value();
     Rcpp::NumericVector ymu = octave_matrix_to_rcpp(YMU);
     ColumnVector YS2 = octave_result(1).column_vector_value();
