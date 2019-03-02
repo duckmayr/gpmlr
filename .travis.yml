@@ -2,6 +2,7 @@
 
 language: R
 sudo: false
+warnings_are_errors: false
 cache: packages
 
 os:
@@ -20,3 +21,4 @@ brew_packages:
 r_packages:
   - Rcpp
   - testthat
+

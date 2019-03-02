@@ -583,6 +583,7 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
+OCTAVE_LFLAGS
 OCTAVE_LIBS
 OCTAVE_CPPFLAGS
 HAS_OCTAVE
@@ -2483,9 +2484,14 @@ $as_echo_n "checking necessary additions to PKG_CPPFLAGS for the Octave API... "
 octave_cppflags=$(mkoctfile --print INCFLAGS)
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking necessary additions to PKG_LIBS for the Octave API" >&5
-$as_echo_n "checking necessary additions to PKG_LIBS for the Octave API... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking necessary -l additions to PKG_LIBS for the Octave API" >&5
+$as_echo_n "checking necessary -l additions to PKG_LIBS for the Octave API... " >&6; }
 octave_libs=$(mkoctfile --print OCTAVE_LIBS)
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
+$as_echo "" >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking necessary -L additions to PKG_LIBS for the Octave API" >&5
+$as_echo_n "checking necessary -L additions to PKG_LIBS for the Octave API... " >&6; }
+octave_lflags=$(mkoctfile --print LFLAGS)
 { $as_echo "$as_me:${as_lineno-$LINENO}: result: " >&5
 $as_echo "" >&6; }
 
@@ -2493,6 +2499,8 @@ $as_echo "" >&6; }
 OCTAVE_CPPFLAGS="${octave_cppflags}"
 
 OCTAVE_LIBS="${octave_libs}"
+
+OCTAVE_LFLAGS="${octave_lflags}"
 
 ac_config_files="$ac_config_files src/Makevars"
 
