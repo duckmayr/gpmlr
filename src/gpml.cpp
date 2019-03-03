@@ -1,9 +1,6 @@
 #include "gpmlr.h"
 
 // First usage: training.
-// Returns "the negative log marginal likelihood" and "a struct of column 
-// vectors of partial derivatives of the negative log marginal likelihood 
-// w.r.t. mean/cov/lik hyperparameters" (from gp.m)
 // [[Rcpp::export(.gpml1)]]
 Rcpp::List gpml1(Rcpp::List hyperparameters,
                  std::string inffunc,
@@ -12,12 +9,15 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
                  std::string covfunc,
                  Rcpp::NumericVector x,
                  Rcpp::NumericVector y) {
+    // Make sure Octave is embedded
     if ( !octave_is_embedded() ) {
         Rcpp::stop("You must call embed_octave() before this function.\n");
     }
+    // Convert the arguments to values Octave can understand
     octave_map octave_hyperparameters = list_to_map(hyperparameters);
     Matrix octave_x = rcpp_matrix_to_octave(x);
     Matrix octave_y = rcpp_matrix_to_octave(y);
+    // Create the list of arguments going into the Octave function
     octave_value_list in;
     in(0) = octave_value(octave_hyperparameters);
     in(1) = octave_value(inffunc);
@@ -26,8 +26,10 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
     in(4) = octave_value(likfunc);
     in(5) = octave_value(octave_x);
     in(6) = octave_value(octave_y);
+    // Call GPML's Octave function gp()
     octave_value_list octave_result = OCT("gp", in, 2);
-    int N = octave_result.length();
+    // Convert the elements of the resulting octave_value_list
+    // into objects that R will understand
     ColumnVector NLZ = octave_result(0).column_vector_value();
     Rcpp::NumericVector nlz = octave_matrix_to_rcpp(NLZ);
     octave_value tmp = octave_result(1);
@@ -41,10 +43,7 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
                               Rcpp::_["POST"] = post);
 }
 
-// Second usage: prediction.
-// Returns column vectors of predictive output means, predictive output
-// variances, predictive latent means, and predictive latent variances
-// (from gp.m)
+// Second usage: prediction with test inputs.
 // [[Rcpp::export(.gpml2)]]
 Rcpp::List gpml2(Rcpp::List hyperparameters,
                  std::string inffunc,
@@ -54,13 +53,16 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
                  Rcpp::NumericVector training_x,
                  Rcpp::NumericVector training_y,
                  Rcpp::NumericVector testing_x) {
+    // Make sure Octave is embedded
     if ( !octave_is_embedded() ) {
         Rcpp::stop("You must call embed_octave() before this function.\n");
     }
+    // Convert the arguments to values Octave can understand
     octave_map octave_hyperparameters = list_to_map(hyperparameters);
     Matrix octave_training_x = rcpp_matrix_to_octave(training_x);
     Matrix octave_training_y = rcpp_matrix_to_octave(training_y);
     Matrix octave_testing_x = rcpp_matrix_to_octave(testing_x);
+    // Create the list of arguments going into the Octave function
     octave_value_list in;
     in(0) = octave_value(octave_hyperparameters);
     in(1) = octave_value(inffunc);
@@ -70,7 +72,10 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
     in(5) = octave_value(octave_training_x);
     in(6) = octave_value(octave_training_y);
     in(7) = octave_value(octave_testing_x);
+    // Call GPML's Octave function gp()
     octave_value_list octave_result = OCT("gp", in, 1);
+    // Convert the elements of the resulting octave_value_list
+    // into objects that R will understand
     ColumnVector YMU = octave_result(0).column_vector_value();
     Rcpp::NumericVector ymu = octave_matrix_to_rcpp(YMU);
     ColumnVector YS2 = octave_result(1).column_vector_value();
@@ -90,10 +95,7 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
                               Rcpp::_["POST"] = post);
 }
 
-// Third usage: prediction.
-// Returns column vectors of predictive output means, predictive output
-// variances, predictive latent means, predictive latent variances, and
-// log predictive probabilities (from gp.m)
+// Third usage: prediction with test inputs and targets.
 // [[Rcpp::export(.gpml3)]]
 Rcpp::List gpml3(Rcpp::List hyperparameters,
                  std::string inffunc,
@@ -104,14 +106,17 @@ Rcpp::List gpml3(Rcpp::List hyperparameters,
                  Rcpp::NumericVector training_y,
                  Rcpp::NumericVector testing_x,
                  Rcpp::NumericVector testing_y) {
+    // Make sure Octave is embedded
     if ( !octave_is_embedded() ) {
         Rcpp::stop("You must call embed_octave() before this function.\n");
     }
+    // Convert the arguments to values Octave can understand
     octave_map octave_hyperparameters = list_to_map(hyperparameters);
     Matrix octave_training_x = rcpp_matrix_to_octave(training_x);
     Matrix octave_training_y = rcpp_matrix_to_octave(training_y);
     Matrix octave_testing_x = rcpp_matrix_to_octave(testing_x);
     Matrix octave_testing_y = rcpp_matrix_to_octave(testing_y);
+    // Create the list of arguments going into the Octave function
     octave_value_list in;
     in(0) = octave_value(octave_hyperparameters);
     in(1) = octave_value(inffunc);
@@ -122,7 +127,10 @@ Rcpp::List gpml3(Rcpp::List hyperparameters,
     in(6) = octave_value(octave_training_y);
     in(7) = octave_value(octave_testing_x);
     in(8) = octave_value(octave_testing_y);
+    // Call GPML's Octave function gp()
     octave_value_list octave_result = OCT("gp", in, 1);
+    // Convert the elements of the resulting octave_value_list
+    // into objects that R will understand
     ColumnVector YMU = octave_result(0).column_vector_value();
     Rcpp::NumericVector ymu = octave_matrix_to_rcpp(YMU);
     ColumnVector YS2 = octave_result(1).column_vector_value();
