@@ -2,4 +2,5 @@
 
 export(gp)
 importFrom(Rcpp,sourceCpp)
-useDynLib(gpmlr)
+importFrom(utils,capture.output)
+useDynLib(gpmlr, .registration = TRUE)

@@ -15,6 +15,16 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// octave_has_ever_been_embedded
+bool octave_has_ever_been_embedded();
+RcppExport SEXP _gpmlr_octave_has_ever_been_embedded() {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    rcpp_result_gen = Rcpp::wrap(octave_has_ever_been_embedded());
+    return rcpp_result_gen;
+END_RCPP
+}
 // embed_octave
 bool embed_octave(bool verbose, bool force);
 RcppExport SEXP _gpmlr_embed_octave(SEXP verboseSEXP, SEXP forceSEXP) {
@@ -114,6 +124,7 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gpmlr_octave_is_embedded", (DL_FUNC) &_gpmlr_octave_is_embedded, 0},
+    {"_gpmlr_octave_has_ever_been_embedded", (DL_FUNC) &_gpmlr_octave_has_ever_been_embedded, 0},
     {"_gpmlr_embed_octave", (DL_FUNC) &_gpmlr_embed_octave, 2},
     {"_gpmlr_exit_octave", (DL_FUNC) &_gpmlr_exit_octave, 1},
     {"_gpmlr_gpml1", (DL_FUNC) &_gpmlr_gpml1, 7},

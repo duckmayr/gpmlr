@@ -1,93 +1,102 @@
 #include <Rcpp.h>
-#include <octave/oct.h> // For basic Octave types
-#include <octave/octave.h> // For octave_main or interpreter class (embedding)
-#include "define-version.h" // To handle Octave version differences
+#include <octave/oct.h>             // For basic Octave types
+#include <octave/octave.h>          // Some of the embedding code
+#include "define-version.h"         // To handle Octave version differences
 #ifdef OCTAVE_4_2_OR_HIGHER
-    #include <octave/interpreter.h> // To exit embedded Octave
-#else
-    #include <octave/toplev.h> // To exit embedded Octave
+    #include <octave/interpreter.h> // The rest of the embedding/exiting code
+#else 
+    #include <octave/toplev.h>      // Ditto (for older Octave versions)
 #endif
 #include <octave/symtab.h>
 
-// These variables will keep track for us whether Octave is
-// (or has ever been) embedded. That way we can prevent trying
-// to call Octave functions when it isn't currently embedded
-// (which causes segfault) and can avoid accidentally embedding
-// a second time (which fills your console with warnings and may
-// have consequences that I am currently unaware of).
-bool is_octave_embedded = false;
-bool octave_has_ever_been_embedded = false;
 
-// This just checks if Octave is currently embedded
+// We must keep track of whether Octave is or has ever been embedded, since:
+// (1) calling Octave functions if Octave isn't embedded causes segfault; and
+// (2) re-embedding causes *so many* warnings and may have other consequences.
+// So, we keep track of those things with these variables:
+
+bool is_octave_embedded = false;
+bool has_octave_ever_been_embedded = false;
+
+// And can check their value, even from R, with these functions:
+
 // [[Rcpp::export(.octave_is_embedded)]]
 bool octave_is_embedded() {
     return is_octave_embedded;
 }
+// [[Rcpp::export(.octave_has_ever_been_embedded)]]
+bool octave_has_ever_been_embedded() {
+    return has_octave_ever_been_embedded;
+}
 
-// This embeds Octave. It does nothing (but return true) if Octave is
-// currently embedded, and will not embed a second time unless force is
-// true. It "toggles on" our indicator for whether Octave is currently
-// embedded, as well as the indicator for whether it has *ever* been.
-// ever been embedded.
+
+// embed_octave() embeds Octave if appropriate and returns is_octave_embedded.
+// If Octave is embedded, it does not attempt to embed.
+// If it is not, but has been previously, it only re-embeds if force is true.
+// If it has never been embedded, it embeds Octave.
+
 // [[Rcpp::export(.embed_octave)]]
 bool embed_octave(bool verbose, bool force) {
-    // If currently embedded, note that and return true
+    // If currently embedded, note that if verbose & return is_octave_embedded
     if ( octave_is_embedded() ) {
         if ( verbose ) {
             Rcpp::Rcout << "Octave is already embedded, skipping embedding.\n";
         }
-        return true;
+        return is_octave_embedded;
     }
-    // If not currently embedded, but had been previously, and force is false,
-    else if ( octave_has_ever_been_embedded && !force ) {
-        // warn about its effects if verbose is true,
+    // If not embedded but had been previously, and force is false, warn about
+    // effects of re-embedding if verbose is true & return is_octave_embedded
+    else if ( octave_has_ever_been_embedded() && !force ) {
         if ( verbose ) {
             Rcpp::Rcout << "Octave was previously embedded.\n"
                         << "Embedding again will cause a stream of warnings, "
                         << "and is not generally supported.\n"
                         << "To do it anyway, try again with force = TRUE.\n";
         }
-        // and return false.
-        return false;
+        return is_octave_embedded;
     }
     else {
         // Start the process of embedding, noisily if with verbose
         if ( verbose ) {
             Rcpp::Rcout << "Embedding Octave...\n";
         }
-        // For Octave >= 4.4, we can call octave_main with no real arguments
-        #ifdef OCTAVE_4_4_OR_HIGHER
-            char** dummy_options;
-            octave_main(0, dummy_options, true);
-        #else
-            // Otherwise we need actual arguments
-            int n_args = 2;
-            string_vector embed_args(n_args);
-            embed_args(0) = "gpmlr"; // The name of our application
-            embed_args(1) = "-q"; // We want to embed quietly
-            #ifdef OCTAVE_4_2_OR_HIGHER
-                // >= 4.2 & < 4.4 uses embedded_application + interpreter
-                octave::cmdline_options opts(n_args, embed_args.c_str_vec());
-                static octave::embedded_application interpreter(opts);
-                interpreter.execute();
+        // Set embedding arguments:
+        int n_args = 2;
+        string_vector args(n_args);
+        args(0) = "gpmlr"; // The name of our application
+        args(1) = "-q";    // We want to embed quietly
+        // We'll set is_octave_embedded w/ Octave's embedding function's retval
+        #ifdef OCTAVE_4_2_OR_HIGHER
+            #ifdef OCTAVE_4_4_OR_HIGHER
+                // In Octave >= 4.4, we use octave::interpreter
+                static octave::interpreter interpreter;
+                // Return of 0 means successful embedding
+                is_octave_embedded = !interpreter.execute();
             #else
-                // < 4.2 uses octave_main
-                octave_main(n_args, embed_args.c_str_vec(), true);
+                // In Octave >= 4.2 & < 4.4 we use octave::embedded_application
+                octave::cmdline_options opts(n_args, args.c_str_vec());
+                static octave::embedded_application interpreter(opts);
+                // Return of 1 means successful embedding
+                is_octave_embedded = interpreter.execute();
             #endif
+        #else
+            // In Octave < 4.2 we use octave_main
+            // Return of 1 means successful embedding
+            is_octave_embedded = octave_main(n_args, args.c_str_vec(), true);
         #endif
-        // toggle our indicators
-        is_octave_embedded = true;
-        octave_has_ever_been_embedded = true;
     }
-    // If Octave is embedded, let the user know
-    if ( verbose && octave_is_embedded() ) {
-        Rcpp::Rcout << "Octave embedded.\n";
+    if ( octave_is_embedded() ) {
+        has_octave_ever_been_embedded = true;
+        if ( verbose ) {
+            Rcpp::Rcout << "Octave embedded.\n";
+        }
     }
     return is_octave_embedded;
 }
 
-// This exits from Octave and "toggles off" our indicator for whether
-// Octave is currently embedded.
+
+// This exits Octave and "toggles off" our indicator for whether it's embedded.
+
 // [[Rcpp::export(.exit_octave)]]
 bool exit_octave(bool verbose) {
     // (Only) if Octave is embedded

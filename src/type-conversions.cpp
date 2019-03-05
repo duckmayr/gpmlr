@@ -68,9 +68,9 @@ Rcpp::List octave_map_to_rcpp(const octave_scalar_map& x) {
     // XXX : THIS ONLY HANDLES MAPS WITH ONLY MATRICES/COLUMNVECTORS
     // Get the field names
     string_vector octave_xnames = x.fieldnames();
-    // To determine the number of elements, we use length() in versions < 4.4
-    // or numel() in versions >= to avoid additional deprecated warnings
-    #ifdef OCTAVE_4_4_OR_HIGHER
+    // To determine the number of elements, we use length() in versions < 4.2
+    // or numel() in versions >= 4.2 to avoid additional deprecated warnings
+    #ifdef OCTAVE_4_2_OR_HIGHER
         int n = octave_xnames.numel();
     #else
         int n = octave_xnames.length();
