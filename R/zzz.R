@@ -4,8 +4,8 @@
 # This function will set everything up nicely, or complain if it can't:
 setup_Octave <- function() {
     packageStartupMessage("Embedding Octave...")
-    octave_is_embedded <- .embed_octave(FALSE, FALSE)
-    if ( octave_is_embedded ) {
+    embed_octave_output <- capture.output(.embed_octave(TRUE, FALSE))
+    if ( rev(embed_octave_output)[1] == "[1] TRUE" ) {
         packageStartupMessage("Octave successfully embedded.")
         sub_dirs <- c("cov", "doc", "inf", "lik", "mean", "prior", "util")
         dirs_to_add <- system.file(paste0("gpml", c("", paste0("/", sub_dirs))),

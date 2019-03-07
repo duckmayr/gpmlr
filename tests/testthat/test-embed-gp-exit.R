@@ -10,9 +10,10 @@ y <- sin(3 * x) + 0.1 * rnorm(20, 0.9, 1)
 xs <- seq(-3, 3, length.out = 61)
 ys <- sin(3 * xs) + 0.1 * rnorm(length(xs), 0.9, 1)
 hyp <- list(mean = numeric(), cov = c(0, 0), lik = -1)
-gp_res_training_ev <- readRDS("gp_res_training_ev.rds")
-gp_res_pred1_ev <- readRDS("gp_res_pred1_ev.rds")
-gp_res_pred2_ev <- readRDS("gp_res_pred2_ev.rds")
+gp_train_ev <- readRDS("gp_res_training_ev.rds")
+gp_pred1_ev <- readRDS("gp_res_pred1_ev.rds")
+gp_pred2_ev <- readRDS("gp_res_pred2_ev.rds")
+x2 <- matrix(rnorm(40, 0.8, 1), ncol = 2)
 
 ## Then we run the tests:
 test_that("Octave sets up properly on attach", {
@@ -20,19 +21,23 @@ test_that("Octave sets up properly on attach", {
     expect_equal(attach_message,
                  c("Embedding Octave...", "Octave successfully embedded.",
                    "Octave load path correctly set.", "gp() is safe to call."))
+    Octave_load_path <- capture.output(gpmlr:::.print_path())
+    expect_match(Octave_load_path, "gpmlr", all = FALSE)
 })
 test_that("We do not attempt re-embedding while embedded", {
     expect_equal(capture.output(gpmlr:::.embed_octave(TRUE, FALSE)),
                  c("Octave is already embedded, skipping embedding.",
                    "[1] TRUE"))
 })
-gp_res_training <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x, y)
-gp_res_pred1 <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x, y, xs)
-gp_res_pred2 <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x, y, xs, ys)
+gp_train <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x, y)
+gp_pred1 <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x, y, xs)
+gp_pred2 <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x, y, xs, ys)
+gp_train_matrix_x <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x2, y)
 test_that("The gp function works properly while Octave is embedded", {
-    expect_equal(gp_res_training, gp_res_training_ev)
-    expect_equal(gp_res_pred1, gp_res_pred1_ev)
-    expect_equal(gp_res_pred2, gp_res_pred2_ev)
+    expect_equal(gp_train, gp_train_ev)
+    expect_equal(gp_pred1, gp_pred1_ev)
+    expect_equal(gp_pred2, gp_pred2_ev)
+    expect_error(gp_train_matrix_x, NA)
 })
 test_that("The Octave exit function works properly", {
     expect_equal(capture.output(gpmlr:::.exit_octave(TRUE)),

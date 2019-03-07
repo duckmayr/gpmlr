@@ -3,11 +3,22 @@
 // We need to be able to manipulate the Octave load path, as Octave can't call
 // functions from an M file unless the directory it's in is on the load path
 
-// Prints the Octave load path to stdout
+// Prints the Octave load path to Rcout
 // (after checking whether Octave is embedded first to avoid segfault)
 // [[Rcpp::export(.print_path)]]
 void print_path() {
+    static bool cout_redirect_needed = true;
     if ( octave_is_embedded() ) {
+        // Unfortunately calling Octave's path will print to cout, while we
+        // would really prefer it to go to Rcout. So, we redirect cout to
+        // Rcout. This approach ironically causes a 'Note' in R CMD check that
+        // "Compiled code should not call entry points which might... write to
+        // stdout/stderr instead of to the console....", even though we're
+        // doing it for the opposite reason.
+        if ( cout_redirect_needed ) { // Redirect cout if we haven't already
+            std::cout.rdbuf(Rcpp::Rcout.rdbuf());
+            cout_redirect_needed = false;
+        }
         OCT("path");
     }
     else {
