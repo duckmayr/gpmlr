@@ -45,10 +45,11 @@ void add_to_path(Rcpp::StringVector x);
 
 
 // ------------ Converting data between Octave and Rcpp types ----------------
-Rcpp::NumericVector octave_matrix_to_rcpp(const Matrix& x);
-Matrix rcpp_matrix_to_octave(const Rcpp::NumericVector& x);
+Rcpp::NumericVector octmat_to_rcppmat(const Matrix& x);
+Matrix rcppmat_to_octmat(const Rcpp::NumericVector& x);
 octave_map list_to_map(const Rcpp::List& x);
-Rcpp::List octave_map_to_rcpp(const octave_scalar_map& x);
+Rcpp::List map_to_list(const octave_scalar_map& x);
+Cell list_to_cell(const Rcpp::List& x);
 
 #endif
 

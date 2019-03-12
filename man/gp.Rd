@@ -10,17 +10,13 @@ gp(hyp, inf, mean, cov, lik, x, y, xs, ys)
 \item{hyp}{A list of length three giving the hyperparameters for the mean,
 covariance, and likelihood functions}
 
-\item{inf}{A character vector of length one giving the name of an inference
-method (see details)}
+\item{inf}{A character vector or list giving the inference method}
 
-\item{mean}{A character vector of length one giving the name of an mean
-function (see details)}
+\item{mean}{A character vector or list giving the mean function}
 
-\item{cov}{A character vector of length one giving the name of an mean
-function (see details)}
+\item{cov}{A character vector or list giving the covariance function}
 
-\item{lik}{A character vector of length one giving the name of an mean
-function (see details)}
+\item{lik}{A character vector or list giving the likelihood function}
 
 \item{x}{A numeric vector or matrix of training inputs}
 
@@ -65,14 +61,41 @@ Matlab function. Their detailed manual is available at
 \url{http://www.gaussianprocess.org/gpml/code/matlab/doc/manual.pdf}.
 }
 \examples{
-## This example is given on the GPML website.
-## Here's how we'd run the same example from R.
+## These examples are given on the GPML website.
+## Here's how you can run them from R.
+## First consider an example with simple mean and covariance functions:
 set.seed(123)
 x <- rnorm(20, 0.8, 1)
 y <- sin(3 * x) + 0.1 * rnorm(20, 0.9, 1)
 xs <- seq(-3, 3, length.out = 61)
 hyp <- list(mean = numeric(), cov = c(0, 0), lik = -1)
-gp_res <- gp(hyp, "infGaussLik", "", "likGauss", "covSEiso", x, y, xs)
-str(gp_res)
-plot(xs, gp_res$YMU)
+gp_result <- gp(hyp, "infGaussLik", "", "covSEiso", "likGauss", x, y, xs)
+str(gp_result)
+plot(xs, gp_result$YMU, type = "l",
+     xlab = "x", ylab = "Predictive Output Mean")
+## Now consider an example with a composite covariance function:
+n1 <- 80
+n2 <- 40
+S1 <- diag(2)
+S2 <- matrix(c(1, 0.95, 0.95, 1), nrow = 2, byrow = TRUE)
+m1 <- c( 0.75, 0)
+m2 <- c(-0.75, 0)
+set.seed(42)
+tmp <- t(chol(S1)) \%*\% matrix(rnorm(160, sd = 0.2), nrow = 2, ncol = n1)
+x1 <- apply(tmp, 2, '+', m1)
+tmp <- t(chol(S2)) \%*\% matrix(rnorm(160, sd = 0.3), nrow = 2, ncol = n2)
+x2 <- apply(tmp, 2, '+', m2)
+x <- t(cbind(x1, x2))
+y <- matrix(c(rep(-1, n1), rep(1, n2)), ncol = 1)
+tx <- as.matrix(expand.grid(seq(-4, 4, 0.1), seq(-4, 4, 0.1)))
+u <- as.matrix(expand.grid(-2:2, -2:2))
+n <- prod(dim(tx))
+ty <- rep(1, n)
+hyp <- list(mean = -3, cov = c(-0.2, -0.05, 1.25))
+inffunc <- "infLaplace"
+meanfunc <- "meanConst"
+covfunc <- list("apxSparse", list("covSEard"), u)
+likfunc <- "likErf"
+gp_result <- gp(hyp, inffunc, meanfunc, covfunc, likfunc, x, y, tx, ty)
+str(gp_result)
 }

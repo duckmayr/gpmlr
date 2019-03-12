@@ -49,56 +49,56 @@ BEGIN_RCPP
 END_RCPP
 }
 // gpml1
-Rcpp::List gpml1(Rcpp::List hyperparameters, std::string inffunc, std::string meanfunc, std::string likfunc, std::string covfunc, Rcpp::NumericVector x, Rcpp::NumericVector y);
-RcppExport SEXP _gpmlr_gpml1(SEXP hyperparametersSEXP, SEXP inffuncSEXP, SEXP meanfuncSEXP, SEXP likfuncSEXP, SEXP covfuncSEXP, SEXP xSEXP, SEXP ySEXP) {
+Rcpp::List gpml1(Rcpp::List hyperparameters, Rcpp::List inffunc, Rcpp::List meanfunc, Rcpp::List covfunc, Rcpp::List likfunc, Rcpp::NumericVector x, Rcpp::NumericVector y);
+RcppExport SEXP _gpmlr_gpml1(SEXP hyperparametersSEXP, SEXP inffuncSEXP, SEXP meanfuncSEXP, SEXP covfuncSEXP, SEXP likfuncSEXP, SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type hyperparameters(hyperparametersSEXP);
-    Rcpp::traits::input_parameter< std::string >::type inffunc(inffuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type meanfunc(meanfuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type likfunc(likfuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type covfunc(covfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type inffunc(inffuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type meanfunc(meanfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type covfunc(covfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type likfunc(likfuncSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(gpml1(hyperparameters, inffunc, meanfunc, likfunc, covfunc, x, y));
+    rcpp_result_gen = Rcpp::wrap(gpml1(hyperparameters, inffunc, meanfunc, covfunc, likfunc, x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 // gpml2
-Rcpp::List gpml2(Rcpp::List hyperparameters, std::string inffunc, std::string meanfunc, std::string likfunc, std::string covfunc, Rcpp::NumericVector training_x, Rcpp::NumericVector training_y, Rcpp::NumericVector testing_x);
-RcppExport SEXP _gpmlr_gpml2(SEXP hyperparametersSEXP, SEXP inffuncSEXP, SEXP meanfuncSEXP, SEXP likfuncSEXP, SEXP covfuncSEXP, SEXP training_xSEXP, SEXP training_ySEXP, SEXP testing_xSEXP) {
+Rcpp::List gpml2(Rcpp::List hyperparameters, Rcpp::List inffunc, Rcpp::List meanfunc, Rcpp::List covfunc, Rcpp::List likfunc, Rcpp::NumericVector training_x, Rcpp::NumericVector training_y, Rcpp::NumericVector testing_x);
+RcppExport SEXP _gpmlr_gpml2(SEXP hyperparametersSEXP, SEXP inffuncSEXP, SEXP meanfuncSEXP, SEXP covfuncSEXP, SEXP likfuncSEXP, SEXP training_xSEXP, SEXP training_ySEXP, SEXP testing_xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type hyperparameters(hyperparametersSEXP);
-    Rcpp::traits::input_parameter< std::string >::type inffunc(inffuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type meanfunc(meanfuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type likfunc(likfuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type covfunc(covfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type inffunc(inffuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type meanfunc(meanfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type covfunc(covfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type likfunc(likfuncSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type training_x(training_xSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type training_y(training_ySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type testing_x(testing_xSEXP);
-    rcpp_result_gen = Rcpp::wrap(gpml2(hyperparameters, inffunc, meanfunc, likfunc, covfunc, training_x, training_y, testing_x));
+    rcpp_result_gen = Rcpp::wrap(gpml2(hyperparameters, inffunc, meanfunc, covfunc, likfunc, training_x, training_y, testing_x));
     return rcpp_result_gen;
 END_RCPP
 }
 // gpml3
-Rcpp::List gpml3(Rcpp::List hyperparameters, std::string inffunc, std::string meanfunc, std::string likfunc, std::string covfunc, Rcpp::NumericVector training_x, Rcpp::NumericVector training_y, Rcpp::NumericVector testing_x, Rcpp::NumericVector testing_y);
-RcppExport SEXP _gpmlr_gpml3(SEXP hyperparametersSEXP, SEXP inffuncSEXP, SEXP meanfuncSEXP, SEXP likfuncSEXP, SEXP covfuncSEXP, SEXP training_xSEXP, SEXP training_ySEXP, SEXP testing_xSEXP, SEXP testing_ySEXP) {
+Rcpp::List gpml3(Rcpp::List hyperparameters, Rcpp::List inffunc, Rcpp::List meanfunc, Rcpp::List covfunc, Rcpp::List likfunc, Rcpp::NumericVector training_x, Rcpp::NumericVector training_y, Rcpp::NumericVector testing_x, Rcpp::NumericVector testing_y);
+RcppExport SEXP _gpmlr_gpml3(SEXP hyperparametersSEXP, SEXP inffuncSEXP, SEXP meanfuncSEXP, SEXP covfuncSEXP, SEXP likfuncSEXP, SEXP training_xSEXP, SEXP training_ySEXP, SEXP testing_xSEXP, SEXP testing_ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< Rcpp::List >::type hyperparameters(hyperparametersSEXP);
-    Rcpp::traits::input_parameter< std::string >::type inffunc(inffuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type meanfunc(meanfuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type likfunc(likfuncSEXP);
-    Rcpp::traits::input_parameter< std::string >::type covfunc(covfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type inffunc(inffuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type meanfunc(meanfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type covfunc(covfuncSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type likfunc(likfuncSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type training_x(training_xSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type training_y(training_ySEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type testing_x(testing_xSEXP);
     Rcpp::traits::input_parameter< Rcpp::NumericVector >::type testing_y(testing_ySEXP);
-    rcpp_result_gen = Rcpp::wrap(gpml3(hyperparameters, inffunc, meanfunc, likfunc, covfunc, training_x, training_y, testing_x, testing_y));
+    rcpp_result_gen = Rcpp::wrap(gpml3(hyperparameters, inffunc, meanfunc, covfunc, likfunc, training_x, training_y, testing_x, testing_y));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -121,6 +121,16 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// set_wd
+void set_wd(Rcpp::StringVector x);
+RcppExport SEXP _gpmlr_set_wd(SEXP xSEXP) {
+BEGIN_RCPP
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::StringVector >::type x(xSEXP);
+    set_wd(x);
+    return R_NilValue;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gpmlr_octave_is_embedded", (DL_FUNC) &_gpmlr_octave_is_embedded, 0},
@@ -132,6 +142,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gpmlr_gpml3", (DL_FUNC) &_gpmlr_gpml3, 9},
     {"_gpmlr_print_path", (DL_FUNC) &_gpmlr_print_path, 0},
     {"_gpmlr_add_to_path", (DL_FUNC) &_gpmlr_add_to_path, 1},
+    {"_gpmlr_set_wd", (DL_FUNC) &_gpmlr_set_wd, 1},
     {NULL, NULL, 0}
 };
 

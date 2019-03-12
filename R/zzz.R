@@ -7,7 +7,9 @@ setup_Octave <- function() {
     embed_octave_output <- capture.output(.embed_octave(TRUE, FALSE))
     if ( rev(embed_octave_output)[1] == "[1] TRUE" ) {
         packageStartupMessage("Octave successfully embedded.")
-        sub_dirs <- c("cov", "doc", "inf", "lik", "mean", "prior", "util")
+        sub_dirs <- c("cov", "doc", "inf", "lik", "mean", "prior", "util",
+                      "util/sparseinv", "util/minfunc", "util/lbfgsb",
+                      "util/minfunc/compiled", "util/minfunc/mex")
         dirs_to_add <- system.file(paste0("gpml", c("", paste0("/", sub_dirs))),
                                    package = "gpmlr")
         .add_to_path(dirs_to_add)

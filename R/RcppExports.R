@@ -17,16 +17,16 @@
     .Call(`_gpmlr_exit_octave`, verbose)
 }
 
-.gpml1 <- function(hyperparameters, inffunc, meanfunc, likfunc, covfunc, x, y) {
-    .Call(`_gpmlr_gpml1`, hyperparameters, inffunc, meanfunc, likfunc, covfunc, x, y)
+.gpml1 <- function(hyperparameters, inffunc, meanfunc, covfunc, likfunc, x, y) {
+    .Call(`_gpmlr_gpml1`, hyperparameters, inffunc, meanfunc, covfunc, likfunc, x, y)
 }
 
-.gpml2 <- function(hyperparameters, inffunc, meanfunc, likfunc, covfunc, training_x, training_y, testing_x) {
-    .Call(`_gpmlr_gpml2`, hyperparameters, inffunc, meanfunc, likfunc, covfunc, training_x, training_y, testing_x)
+.gpml2 <- function(hyperparameters, inffunc, meanfunc, covfunc, likfunc, training_x, training_y, testing_x) {
+    .Call(`_gpmlr_gpml2`, hyperparameters, inffunc, meanfunc, covfunc, likfunc, training_x, training_y, testing_x)
 }
 
-.gpml3 <- function(hyperparameters, inffunc, meanfunc, likfunc, covfunc, training_x, training_y, testing_x, testing_y) {
-    .Call(`_gpmlr_gpml3`, hyperparameters, inffunc, meanfunc, likfunc, covfunc, training_x, training_y, testing_x, testing_y)
+.gpml3 <- function(hyperparameters, inffunc, meanfunc, covfunc, likfunc, training_x, training_y, testing_x, testing_y) {
+    .Call(`_gpmlr_gpml3`, hyperparameters, inffunc, meanfunc, covfunc, likfunc, training_x, training_y, testing_x, testing_y)
 }
 
 .print_path <- function() {
@@ -35,5 +35,9 @@
 
 .add_to_path <- function(x) {
     invisible(.Call(`_gpmlr_add_to_path`, x))
+}
+
+.set_wd <- function(x) {
+    invisible(.Call(`_gpmlr_set_wd`, x))
 }
 

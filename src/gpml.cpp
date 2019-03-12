@@ -3,10 +3,10 @@
 // First usage: training.
 // [[Rcpp::export(.gpml1)]]
 Rcpp::List gpml1(Rcpp::List hyperparameters,
-                 std::string inffunc,
-                 std::string meanfunc,
-                 std::string likfunc,
-                 std::string covfunc,
+                 Rcpp::List inffunc,
+                 Rcpp::List meanfunc,
+                 Rcpp::List covfunc,
+                 Rcpp::List likfunc,
                  Rcpp::NumericVector x,
                  Rcpp::NumericVector y) {
     // Make sure Octave is embedded
@@ -15,15 +15,19 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
     }
     // Convert the arguments to values Octave can understand
     octave_map octave_hyperparameters = list_to_map(hyperparameters);
-    Matrix octave_x = rcpp_matrix_to_octave(x);
-    Matrix octave_y = rcpp_matrix_to_octave(y);
+    Cell inf_func = list_to_cell(inffunc);
+    Cell mean_func = list_to_cell(meanfunc);
+    Cell lik_func = list_to_cell(likfunc);
+    Cell cov_func = list_to_cell(covfunc);
+    Matrix octave_x = rcppmat_to_octmat(x);
+    Matrix octave_y = rcppmat_to_octmat(y);
     // Create the list of arguments going into the Octave function
     octave_value_list in;
     in(0) = octave_value(octave_hyperparameters);
-    in(1) = octave_value(inffunc);
-    in(2) = octave_value(meanfunc);
-    in(3) = octave_value(covfunc);
-    in(4) = octave_value(likfunc);
+    in(1) = octave_value(inf_func);
+    in(2) = octave_value(mean_func);
+    in(3) = octave_value(cov_func);
+    in(4) = octave_value(lik_func);
     in(5) = octave_value(octave_x);
     in(6) = octave_value(octave_y);
     // Call GPML's Octave function gp()
@@ -31,13 +35,13 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
     // Convert the elements of the resulting octave_value_list
     // into objects that R will understand
     ColumnVector NLZ = octave_result(0).column_vector_value();
-    Rcpp::NumericVector nlz = octave_matrix_to_rcpp(NLZ);
+    Rcpp::NumericVector nlz = octmat_to_rcppmat(NLZ);
     octave_value tmp = octave_result(1);
     octave_scalar_map DNLZ = tmp.scalar_map_value();
-    Rcpp::List dnlz = octave_map_to_rcpp(DNLZ);
+    Rcpp::List dnlz = map_to_list(DNLZ);
     tmp = octave_result(2);
     octave_scalar_map POST = tmp.scalar_map_value();
-    Rcpp::List post = octave_map_to_rcpp(POST);
+    Rcpp::List post = map_to_list(POST);
     return Rcpp::List::create(Rcpp::_["NLZ"] = nlz,
                               Rcpp::_["DNLZ"] = dnlz,
                               Rcpp::_["POST"] = post);
@@ -46,10 +50,10 @@ Rcpp::List gpml1(Rcpp::List hyperparameters,
 // Second usage: prediction with test inputs.
 // [[Rcpp::export(.gpml2)]]
 Rcpp::List gpml2(Rcpp::List hyperparameters,
-                 std::string inffunc,
-                 std::string meanfunc,
-                 std::string likfunc,
-                 std::string covfunc,
+                 Rcpp::List inffunc,
+                 Rcpp::List meanfunc,
+                 Rcpp::List covfunc,
+                 Rcpp::List likfunc,
                  Rcpp::NumericVector training_x,
                  Rcpp::NumericVector training_y,
                  Rcpp::NumericVector testing_x) {
@@ -59,16 +63,20 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
     }
     // Convert the arguments to values Octave can understand
     octave_map octave_hyperparameters = list_to_map(hyperparameters);
-    Matrix octave_training_x = rcpp_matrix_to_octave(training_x);
-    Matrix octave_training_y = rcpp_matrix_to_octave(training_y);
-    Matrix octave_testing_x = rcpp_matrix_to_octave(testing_x);
+    Cell inf_func = list_to_cell(inffunc);
+    Cell mean_func = list_to_cell(meanfunc);
+    Cell lik_func = list_to_cell(likfunc);
+    Cell cov_func = list_to_cell(covfunc);
+    Matrix octave_training_x = rcppmat_to_octmat(training_x);
+    Matrix octave_training_y = rcppmat_to_octmat(training_y);
+    Matrix octave_testing_x = rcppmat_to_octmat(testing_x);
     // Create the list of arguments going into the Octave function
     octave_value_list in;
     in(0) = octave_value(octave_hyperparameters);
-    in(1) = octave_value(inffunc);
-    in(2) = octave_value(meanfunc);
-    in(3) = octave_value(covfunc);
-    in(4) = octave_value(likfunc);
+    in(1) = octave_value(inf_func);
+    in(2) = octave_value(mean_func);
+    in(3) = octave_value(cov_func);
+    in(4) = octave_value(lik_func);
     in(5) = octave_value(octave_training_x);
     in(6) = octave_value(octave_training_y);
     in(7) = octave_value(octave_testing_x);
@@ -77,17 +85,17 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
     // Convert the elements of the resulting octave_value_list
     // into objects that R will understand
     ColumnVector YMU = octave_result(0).column_vector_value();
-    Rcpp::NumericVector ymu = octave_matrix_to_rcpp(YMU);
+    Rcpp::NumericVector ymu = octmat_to_rcppmat(YMU);
     ColumnVector YS2 = octave_result(1).column_vector_value();
-    Rcpp::NumericVector ys2 = octave_matrix_to_rcpp(YS2);
+    Rcpp::NumericVector ys2 = octmat_to_rcppmat(YS2);
     ColumnVector FMU = octave_result(2).column_vector_value();
-    Rcpp::NumericVector fmu = octave_matrix_to_rcpp(FMU);
+    Rcpp::NumericVector fmu = octmat_to_rcppmat(FMU);
     ColumnVector FS2 = octave_result(3).column_vector_value();
-    Rcpp::NumericVector fs2 = octave_matrix_to_rcpp(FS2);
+    Rcpp::NumericVector fs2 = octmat_to_rcppmat(FS2);
     // The fifth value (element 4) will be empty
     octave_value tmp = octave_result(5);
     octave_scalar_map POST = tmp.scalar_map_value();
-    Rcpp::List post = octave_map_to_rcpp(POST);
+    Rcpp::List post = map_to_list(POST);
     return Rcpp::List::create(Rcpp::_["YMU"] = ymu,
                               Rcpp::_["YS2"] = ys2,
                               Rcpp::_["FMU"] = fmu,
@@ -98,10 +106,10 @@ Rcpp::List gpml2(Rcpp::List hyperparameters,
 // Third usage: prediction with test inputs and targets.
 // [[Rcpp::export(.gpml3)]]
 Rcpp::List gpml3(Rcpp::List hyperparameters,
-                 std::string inffunc,
-                 std::string meanfunc,
-                 std::string likfunc,
-                 std::string covfunc,
+                 Rcpp::List inffunc,
+                 Rcpp::List meanfunc,
+                 Rcpp::List covfunc,
+                 Rcpp::List likfunc,
                  Rcpp::NumericVector training_x,
                  Rcpp::NumericVector training_y,
                  Rcpp::NumericVector testing_x,
@@ -112,17 +120,21 @@ Rcpp::List gpml3(Rcpp::List hyperparameters,
     }
     // Convert the arguments to values Octave can understand
     octave_map octave_hyperparameters = list_to_map(hyperparameters);
-    Matrix octave_training_x = rcpp_matrix_to_octave(training_x);
-    Matrix octave_training_y = rcpp_matrix_to_octave(training_y);
-    Matrix octave_testing_x = rcpp_matrix_to_octave(testing_x);
-    Matrix octave_testing_y = rcpp_matrix_to_octave(testing_y);
+    Cell inf_func = list_to_cell(inffunc);
+    Cell mean_func = list_to_cell(meanfunc);
+    Cell lik_func = list_to_cell(likfunc);
+    Cell cov_func = list_to_cell(covfunc);
+    Matrix octave_training_x = rcppmat_to_octmat(training_x);
+    Matrix octave_training_y = rcppmat_to_octmat(training_y);
+    Matrix octave_testing_x = rcppmat_to_octmat(testing_x);
+    Matrix octave_testing_y = rcppmat_to_octmat(testing_y);
     // Create the list of arguments going into the Octave function
     octave_value_list in;
     in(0) = octave_value(octave_hyperparameters);
-    in(1) = octave_value(inffunc);
-    in(2) = octave_value(meanfunc);
-    in(3) = octave_value(covfunc);
-    in(4) = octave_value(likfunc);
+    in(1) = octave_value(inf_func);
+    in(2) = octave_value(mean_func);
+    in(3) = octave_value(cov_func);
+    in(4) = octave_value(lik_func);
     in(5) = octave_value(octave_training_x);
     in(6) = octave_value(octave_training_y);
     in(7) = octave_value(octave_testing_x);
@@ -132,18 +144,18 @@ Rcpp::List gpml3(Rcpp::List hyperparameters,
     // Convert the elements of the resulting octave_value_list
     // into objects that R will understand
     ColumnVector YMU = octave_result(0).column_vector_value();
-    Rcpp::NumericVector ymu = octave_matrix_to_rcpp(YMU);
+    Rcpp::NumericVector ymu = octmat_to_rcppmat(YMU);
     ColumnVector YS2 = octave_result(1).column_vector_value();
-    Rcpp::NumericVector ys2 = octave_matrix_to_rcpp(YS2);
+    Rcpp::NumericVector ys2 = octmat_to_rcppmat(YS2);
     ColumnVector FMU = octave_result(2).column_vector_value();
-    Rcpp::NumericVector fmu = octave_matrix_to_rcpp(FMU);
+    Rcpp::NumericVector fmu = octmat_to_rcppmat(FMU);
     ColumnVector FS2 = octave_result(3).column_vector_value();
-    Rcpp::NumericVector fs2 = octave_matrix_to_rcpp(FS2);
+    Rcpp::NumericVector fs2 = octmat_to_rcppmat(FS2);
     ColumnVector LP = octave_result(4).column_vector_value();
-    Rcpp::NumericVector lp = octave_matrix_to_rcpp(LP);
+    Rcpp::NumericVector lp = octmat_to_rcppmat(LP);
     octave_value tmp = octave_result(5);
     octave_scalar_map POST = tmp.scalar_map_value();
-    Rcpp::List post = octave_map_to_rcpp(POST);
+    Rcpp::List post = map_to_list(POST);
     return Rcpp::List::create(Rcpp::_["YMU"] = ymu,
                               Rcpp::_["YS2"] = ys2,
                               Rcpp::_["FMU"] = fmu,
