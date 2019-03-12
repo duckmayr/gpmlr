@@ -4,7 +4,7 @@
 
 // String conversions
 string_vector to_string_vector(const Rcpp::CharacterVector& x) {
-    return Rcpp::as<std::vector<std::string> >(x);
+    return Rcpp::as<std::list<std::string> >(x);
 }
 
 // CONVERSIONS BETWEEN MATRICES

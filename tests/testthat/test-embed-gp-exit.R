@@ -10,9 +10,6 @@ y <- sin(3 * x) + 0.1 * rnorm(20, 0.9, 1)
 xs <- seq(-3, 3, length.out = 61)
 ys <- sin(3 * xs) + 0.1 * rnorm(length(xs), 0.9, 1)
 hyp <- list(mean = numeric(), cov = c(0, 0), lik = -1)
-gp_train_ev <- readRDS("gp_res_training_ev.rds")
-gp_pred1_ev <- readRDS("gp_res_pred1_ev.rds")
-gp_pred2_ev <- readRDS("gp_res_pred2_ev.rds")
 x2 <- matrix(rnorm(40, 0.8, 1), ncol = 2)
 ## Now a more complex example:
 ## (both this and the above example are from
@@ -38,7 +35,6 @@ inffunc <- "infLaplace"
 meanfunc <- "meanConst"
 covfunc <- list("apxSparse", list("covSEard"), u)
 likfunc <- "likErf"
-gp_complex_ev <- readRDS("gp_res_complex_ev.rds")
 
 
 ## Then we run the tests:
@@ -64,11 +60,33 @@ gp_pred2 <- gp(hyp, "infGaussLik", "", "covSEiso", "likGauss", x, y, xs, ys)
 gp_complex <- gp(hyp2, inffunc, meanfunc, covfunc, likfunc, X, Y, tt, rep(1, n))
 
 test_that("The gp function works properly while Octave is embedded", {
-    expect_equal(gp_train, gp_train_ev)
-    expect_equal(gp_pred1, gp_pred1_ev)
-    expect_equal(gp_pred2, gp_pred2_ev)
+    expect_setequal(names(gp_train), c("NLZ", "DNLZ", "POST"))
+    expect_setequal(names(gp_train$POST), c("L", "alpha", "sW"))
+    expect_setequal(sapply(gp_train, class), c("matrix", "list"))
+    expect_setequal(sapply(gp_train, length), c(1, 3))
+    expect_setequal(sapply(gp_train$DNLZ, class), "matrix")
+    expect_setequal(sapply(gp_train$DNLZ, length), 0:2)
+    expect_setequal(sapply(gp_train$POST, class), "matrix")
+    expect_setequal(sapply(gp_train$POST, length), c(20, 400))
+    expect_setequal(names(gp_pred1), c("YMU", "YS2", "FMU", "FS2", "POST"))
+    expect_setequal(names(gp_pred1$POST), c("L", "alpha", "sW"))
+    expect_setequal(sapply(gp_pred1, class), c("matrix", "list"))
+    expect_setequal(sapply(gp_pred1, length), c(61, 3))
+    expect_setequal(sapply(gp_pred1$POST, class), "matrix")
+    expect_setequal(sapply(gp_pred1$POST, length), c(20, 400))
+    expect_setequal(names(gp_pred2), c("YMU", "YS2", "FMU", "FS2", "LP", "POST"))
+    expect_setequal(names(gp_pred2$POST), c("L", "alpha", "sW"))
+    expect_setequal(sapply(gp_pred2, class), c("matrix", "list"))
+    expect_setequal(sapply(gp_pred2, length), c(61, 3))
+    expect_setequal(sapply(gp_pred2$POST, class), "matrix")
+    expect_setequal(sapply(gp_pred2$POST, length), c(20, 400))
+    expect_setequal(names(gp_complex), c("YMU", "YS2", "FMU", "FS2", "LP", "POST"))
+    expect_setequal(names(gp_complex$POST), c("L", "alpha", "sW"))
+    expect_setequal(sapply(gp_complex, class), c("matrix", "list"))
+    expect_setequal(sapply(gp_complex, length), c(6561, 3))
+    expect_setequal(sapply(gp_complex$POST, class), c("matrix", "character"))
+    expect_setequal(sapply(gp_complex$POST, length), c(1, 25, 120))
     expect_error(gp(hyp, "infGaussLik", "", "covSEiso", "likGauss", x2, y), NA)
-    expect_equal(gp_complex, gp_complex_ev)
     expect_error(gp(hyp, "infGaussLik", "", NA, "likGauss", x, y), "Failed")
 })
 
