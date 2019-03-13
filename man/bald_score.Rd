@@ -7,15 +7,18 @@
 bald_score(mu, sigma2)
 }
 \arguments{
-\item{mu}{A vector of latent means for the possible comparisons, as returned by the \code{FMU} slot of a \code{gp} call.}
+\item{mu}{A vector of latent means for the possible comparisons, as returned
+by the \code{FMU} slot of a \code{gp} call.}
 
-\item{sigma2}{A vector of latent standard deviations for the possible comparison, as returned by the \code{FS2} slot of a \code{gp} call.}
+\item{sigma2}{A vector of latent standard deviations for the possible
+comparison, as returned by the \code{FS2} slot of a \code{gp} call.}
 }
 \value{
 A vector of calculated bald scores for each possible comparison
 }
 \description{
-\code{bald_score} uses results from \code{gp} to calculate the bald scores capturing potential information gain from a binary comparison.
+\code{bald_score} uses results from \code{gp} to calculate the bald scores
+capturing potential information gain from a binary comparison.
 }
 \details{
 This function takes as input results from a preference learning GP.
@@ -37,25 +40,25 @@ oracle <- function(pair) 2 * (runif(1) < pnorm(f[pair[1]] - f[pair[2]])) - 1
 # create test set containing one observation of each pair
 y_test <- matrix(0, nrow = num_pairs, ncol = 1)
 for ( i in 1:num_pairs ) {
-  y_test[i] = oracle(pairs[i, ]);
+  y_test[i] <- oracle(pairs[i, ]);
 }
-mean_function       = list("meanPref", list("meanZero"))
-covariance_function = list("covPref", list("covNoise"))
-likelihood          = "likErf"
-inference_method    = "infLaplace"
+mean_function       <- list("meanPref", list("meanZero"))
+covariance_function <- list("covPref", list("covNoise"))
+likelihood          <- "likErf"
+inference_method    <- "infLaplace"
 theta <- list(mean = numeric(), cov = log(1))
 # sample first observation randomly
-train_ind = sample(x = 1:num_pairs, size = 1);
-x = pairs[train_ind, , drop = FALSE]
-y = apply(x, 1, oracle)
+train_ind <- sample(x = 1:num_pairs, size = 1);
+x <- pairs[train_ind, , drop = FALSE]
+y <- apply(x, 1, oracle)
 # run gp()
 res <- gp(theta, inference_method, mean_function, covariance_function,
           likelihood, x, y, pairs)
-mu = res$FMU
-sigma2 = res$FS2
-bald_scores = bald_score(mu, sigma2)
-#which pair to compare next?
-pairs[which.max(bald_scores),]
+mu <- res$FMU
+sigma2 <- res$FS2
+bald_scores <- bald_score(mu, sigma2)
+# which pair to compare next?
+pairs[which.max(bald_scores), ]
 
 }
 \seealso{

@@ -90,6 +90,43 @@ test_that("The gp function works properly while Octave is embedded", {
     expect_error(gp(hyp, "infGaussLik", "", NA, "likGauss", x, y), "Failed")
 })
 
+set.seed(12321)
+num_points <- 200
+pairs <- t(combn(1:num_points, 2))
+num_pairs <- nrow(pairs)
+ind <- sample(num_pairs)
+pairs <- pairs[ind, ]
+# ground truth: sample in model
+f <- matrix(rnorm(num_points), ncol = 1)
+# sample a label for a given pair
+oracle <- function(pair) 2 * (runif(1) < pnorm(f[pair[1]] - f[pair[2]])) - 1
+# create test set containing one observation of each pair
+y_test <- matrix(0, nrow = num_pairs, ncol = 1)
+for ( i in 1:num_pairs ) {
+  y_test[i] <- oracle(pairs[i, ]);
+}
+mean_function       <- list("meanPref", list("meanZero"))
+covariance_function <- list("covPref", list("covNoise"))
+likelihood          <- "likErf"
+inference_method    <- "infLaplace"
+theta <- list(mean = numeric(), cov = log(1))
+# sample first observation randomly
+train_ind <- sample(x = 1:num_pairs, size = 1);
+x <- pairs[train_ind, , drop = FALSE]
+y <- apply(x, 1, oracle)
+# run gp()
+res <- gp(theta, inference_method, mean_function, covariance_function,
+          likelihood, x, y, pairs)
+mu <- res$FMU
+sigma2 <- res$FS2
+bald_scores <- bald_score(mu, sigma2)
+
+test_that("bald_score works properly", {
+    expect_error(bald_score(mu, sigma2), NA)
+    expect_equal(class(bald_score(mu, sigma2)), "matrix")
+    expect_equal(dim(bald_score(mu, sigma2)), c(19900, 1))
+})
+
 test_that("The Octave exit function works properly", {
     expect_equal(capture.output(gpmlr:::.exit_octave(TRUE)),
                  c("Exited Octave.", "[1] FALSE"))

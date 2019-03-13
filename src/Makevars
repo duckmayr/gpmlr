@@ -1,4 +1,0 @@
-PKG_CPPFLAGS = -I/usr/include/octave-4.2.2/octave/.. -I/usr/include/octave-4.2.2/octave -I/usr/include/hdf5/serial
-PKG_LIBS = -loctinterp -loctave  -L/usr/lib/x86_64-linux-gnu/octave/4.2.2 -L/usr/lib/x86_64-linux-gnu
-CXX_STD = CXX11
-

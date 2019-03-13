@@ -3,5 +3,6 @@
 export(bald_score)
 export(gp)
 importFrom(Rcpp,sourceCpp)
+importFrom(stats,pnorm)
 importFrom(utils,capture.output)
 useDynLib(gpmlr, .registration = TRUE)
