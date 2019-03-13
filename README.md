@@ -27,12 +27,18 @@ sudo apt update
 sudo apt install octave liboctave-dev
 ```
 
+On Mac, you can use Homebrew to install Octave:
+
+```shell
+brew update
+brew install octave
+```
+
 We do provide the `GPML` code so that anyone with Octave installed can use the R package out of the box.
 
 ## Using gpmlr
 
-`gpmlr` only has one exported function, `gp()`.
-It calls GPML's `gp()` MATLAB function.
+`gpmlr` provides an R facing function, `gp()`, that calls GPML's `gp()` MATLAB function.
 Some basic documentation for our R interface is available via 
 
 ```r

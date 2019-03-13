@@ -1,11 +1,12 @@
-#' Bald Score Calculation for Determining Potential Information Gain
+#' BALD Score Calculation for Determining Potential Information Gain
 #'
-#' \code{bald_score} uses results from \code{gp} to calculate the bald scores
-#' capturing potential information gain from a binary comparison.
+#' \code{bald_score} uses results from \code{gp} to calculate the BALD
+#' (Bayesian Active Learning by Disagreement) scores capturing potential
+#' information gain from a binary comparison.
 #' 
 #' This function takes as input results from a preference learning GP.
 #' It then calculates the potential information gain of comparing two
-#' inputs. For active learning, the maximum bald score indicates which
+#' inputs. For active learning, the maximum BALD score indicates which
 #' comparison to use next to improve the information.
 #'  
 #' @param mu A vector of latent means for the possible comparisons, as returned
@@ -13,7 +14,8 @@
 #' @param sigma2 A vector of latent standard deviations for the possible
 #'   comparison, as returned by the \code{FS2} slot of a \code{gp} call.
 #'
-#' @return A vector of calculated bald scores for each possible comparison
+#' @return A vector of calculated BALD scores for each possible comparison
+#' 
 #' @examples
 #' set.seed(12321)
 #' num_points <- 200
@@ -49,6 +51,9 @@
 #' pairs[which.max(bald_scores), ]
 #' 
 #' @seealso \code{\link{gp}}
+#' @references Houlsby, Neil, Ferenc Huszar, Zoubin Ghahramani, and Mate
+#'   Lengyel. 2011. "Bayesian Active Learning for Classification and Preference
+#'   Learning."  arXiv:1112.5745 [stat.ML]
 #' 
 #' @export
 bald_score <- function(mu, sigma2){

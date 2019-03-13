@@ -2,7 +2,7 @@
 % Please edit documentation in R/bald_score.R
 \name{bald_score}
 \alias{bald_score}
-\title{Bald Score Calculation for Determining Potential Information Gain}
+\title{BALD Score Calculation for Determining Potential Information Gain}
 \usage{
 bald_score(mu, sigma2)
 }
@@ -14,16 +14,17 @@ by the \code{FMU} slot of a \code{gp} call.}
 comparison, as returned by the \code{FS2} slot of a \code{gp} call.}
 }
 \value{
-A vector of calculated bald scores for each possible comparison
+A vector of calculated BALD scores for each possible comparison
 }
 \description{
-\code{bald_score} uses results from \code{gp} to calculate the bald scores
-capturing potential information gain from a binary comparison.
+\code{bald_score} uses results from \code{gp} to calculate the BALD
+(Bayesian Active Learning by Disagreement) scores capturing potential
+information gain from a binary comparison.
 }
 \details{
 This function takes as input results from a preference learning GP.
 It then calculates the potential information gain of comparing two
-inputs. For active learning, the maximum bald score indicates which
+inputs. For active learning, the maximum BALD score indicates which
 comparison to use next to improve the information.
 }
 \examples{
@@ -60,6 +61,11 @@ bald_scores <- bald_score(mu, sigma2)
 # which pair to compare next?
 pairs[which.max(bald_scores), ]
 
+}
+\references{
+Houlsby, Neil, Ferenc Huszar, Zoubin Ghahramani, and Mate
+  Lengyel. 2011. "Bayesian Active Learning for Classification and Preference
+  Learning."  arXiv:1112.5745 [stat.ML]
 }
 \seealso{
 \code{\link{gp}}
