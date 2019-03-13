@@ -2,7 +2,7 @@
 # (our C++ to Octave type converter assumes function names are in lists)
 listfix <- function(x) {
     if ( !is.list(x) ) {
-        x < list(x)
+        x <- list(x)
     }
     return(x)
 }
