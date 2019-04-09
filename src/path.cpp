@@ -54,7 +54,7 @@ void add_to_path(Rcpp::StringVector x) {
 // I believe this needs an absolute path (though it will do tilde expansion)
 // [[Rcpp::export(.set_wd)]]
 void set_wd(Rcpp::StringVector x) {
-    if ( octave_is_embedded ) {
+    if ( octave_has_ever_been_embedded() ) {
         octave_value octave_wd_string = Rcpp::as<std::string>(x(0));
         OCT("cd", octave_wd_string);
     }
