@@ -1,4 +1,4 @@
-function [m,dm] = meanSum(mean, hyp, x)
+function A = meanSum(mean, hyp, x, i)
 
 % meanSum - compose a mean function as the sum of other mean functions.
 % This function doesn't actually compute very much on its own, it merely does
@@ -6,32 +6,38 @@ function [m,dm] = meanSum(mean, hyp, x)
 %
 % m(x) = \sum_i m_i(x)
 %
-% Copyright (c) by Carl Edward Rasmussen & Hannes Nickisch 2016-04-15.
+% Copyright (c) by Carl Edward Rasmussen & Hannes Nickisch 2010-08-04.
 %
-% See also MEANFUNCTIONS
+% See also MEANFUNCTIONS.M.
 
-nm = numel(mean);
-for ii = 1:nm                                      % iterate over mean functions
+for ii = 1:numel(mean)                             % iterate over mean functions
   f = mean(ii); if iscell(f{:}), f = f{:}; end  % expand cell array if necessary
   j(ii) = cellstr(feval(f{:}));                          % collect number hypers
 end
 
 if nargin<3                                        % report number of parameters
-  m = char(j(1)); for ii=2:nm, m = [m, '+', char(j(ii))]; end; return
+  A = char(j(1)); for ii=2:length(mean), A = [A, '+', char(j(ii))]; end; return
 end
+
 [n,D] = size(x);
 
 v = [];                     % v vector indicates to which mean parameters belong
-for ii = 1:nm, v = [v repmat(ii, 1, eval(char(j(ii))))]; end
+for ii = 1:length(mean), v = [v repmat(ii, 1, eval(char(j(ii))))]; end
 
-m = zeros(n,1); dmi = cell(nm,1);                               % allocate space
-for ii = 1:nm                                 % iteration over summand functions
-  f = mean(ii); if iscell(f{:}), f = f{:}; end     % expand cell array if needed
-  [mi,dmi{ii}] = feval(f{:}, hyp(v==ii), x);
-  m = m+mi;                                                   % accumulate means
+if nargin==3                                               % compute mean vector
+  A = zeros(n,1);                                               % allocate space
+  for ii = 1:length(mean)                     % iteration over summand functions
+    f = mean(ii); if iscell(f{:}), f = f{:}; end   % expand cell array if needed
+    A = A + feval(f{:}, hyp(v==ii), x);                       % accumulate means
+  end
+else                                                 % compute derivative vector
+  if i<=length(v)
+    ii = v(i);                                             % which mean function
+    j = sum(v(1:i)==ii);                          % which parameter in that mean
+    f = mean(ii);
+    if iscell(f{:}), f = f{:}; end         % dereference cell array if necessary
+    A = feval(f{:}, hyp(v==ii), x, j);                      % compute derivative
+  else
+    A = zeros(n,1);
+  end
 end
-dm = @(q) dirder(q,dmi,v,nm);                           % directional derivative
-
-function dhyp = dirder(q,dmi,v,nm)
-  dhyp = zeros(nm,1);
-  for ii = 1:nm, dhyp(v==ii,1) = dmi{ii}(q); end

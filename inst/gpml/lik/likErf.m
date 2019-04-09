@@ -1,36 +1,16 @@
 function [varargout] = likErf(hyp, y, mu, s2, inf, i)
-% LIKERF Error function or cumulative Gaussian likelihood function for binary
-% classification or probit regression.
-%
-% Report number of hyperparameters
-%  S = LIKERF ()
-%  S = LIKERF (HYP)
-%
-% Prediction mode
-%   LP            = LIKERF (HYP, Y, MU)
-%  [LP, YMU, YS2] = LIKERF (HYP, Y, MU, S2)
-%
-% Inference mode
-%  [VARARGOUT] = LIKERF (HYP, Y, MU, S2, INF)
-%  [VARARGOUT] = LIKERF (HYP, Y, MU, S2, INF, I)
-%
-% Call likFunctions to get an explanation of outputs in each mode.
-%
-% The expression for the likelihood is 
-%
-%  likErf(t) = ( 1 + erf(t / sqrt(2)) ) / 2 = normcdf(t).
-%
-% There are no hyperparameters:
-%
-%  hyp = [ ]
+
+% likErf - Error function or cumulative Gaussian likelihood function for binary
+% classification or probit regression. The expression for the likelihood is 
+%   likErf(t) = (1+erf(t/sqrt(2)))/2 = normcdf(t).
 %
 % Several modes are provided, for computing likelihoods, derivatives and moments
 % respectively, see likFunctions.m for the details. In general, care is taken
 % to avoid numerical issues when the arguments are extreme.
 % 
-% See also LIKFUNCTIONS
-
 % Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2014-03-19.
+%
+% See also LIKFUNCTIONS.M.
 
 if nargin<3, varargout = {'0'}; return; end   % report number of hyperparameters
 if nargin>1, y = sign(y); y(y==0) = 1; else y = 1; end % allow only +/- 1 values

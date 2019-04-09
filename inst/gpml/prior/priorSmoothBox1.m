@@ -25,7 +25,7 @@ function [lp,dlp] = priorSmoothBox1(a,b,eta,x)
 %
 % Copyright (c) by Jose Vallet and Hannes Nickisch, 2015-03-27.
 %
-% See also PRIORDISTRIBUTIONS
+% See also PRIORDISTRIBUTIONS.M.
 
 if nargin<3, error('a, b and eta parameters need to be provided'), end
 if b<=a, error('b must be greater than a.'), end

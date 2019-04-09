@@ -1,52 +1,30 @@
 function [varargout] = likBeta(link, hyp, y, mu, s2, inf, i)
-% LIKBETA Beta likelihood function for interval data Y from [0,1].
-%
-% Report number of hyperparameters
-%  S = LIKBETA ()
-%  S = LIKBETA (LINK)
-%
-% Prediction mode
-%   LP            = LIKBETA (LINK, HYP, Y, MU)
-%  [LP, YMU, YS2] = LIKBETA (LINK, HYP, Y, MU, S2)
-%
-% Inference mode
-%  [VARARGOUT] = LIKBETA (LINK, HYP, Y, MU, S2, INF)
-%  [VARARGOUT] = LIKBETA (LINK, HYP, Y, MU, S2, INF, I)
-%
-% Call likFunctions to get an explanation of outputs in each mode.
-%
+
+% likBeta - Beta likelihood function for interval data y from [0,1]. 
 % The expression for the likelihood is
-%
-%  likBeta(f) = 1/Z * y^(mu*phi-1) * (1-y)^((1-mu)*phi-1) 
-%
-% with mean = mu and variance = mu * (1 - mu) / (1 + phi) 
-% where mu = g(f) is the Beta intensity, f is a Gaussian process, y is the 
-% interval data and
-%
-% Z = Gamma(phi) / Gamma(phi * mu) /Gamma(phi * (1 - mu)).
-%
+%   likBeta(f) = 1/Z * y^(mu*phi-1) * (1-y)^((1-mu)*phi-1) with 
+% mean=mu and variance=mu*(1-mu)/(1+phi) where mu = g(f) is the Beta intensity,
+% f is a Gaussian process, y is the interval data and
+% Z = Gamma(phi)/Gamma(phi*mu)/Gamma(phi*(1-mu)).
 % Hence, we have
+%   llik(f) = log(likBeta(f)) = -lam*(y-mu)^2/(2*mu^2*y) - log(Zy).
 %
-%   llik(f) = log(likBeta(f)) = -lam * (y - mu)^2 / (2 * mu^2 * y) - log(Zy).
+% We provide two inverse link functions 'logit' and 'expexp':
+%   g(f) = 1/(1+exp(-f)) and g(f) = exp(-exp(-f))).
+% The link functions are located at util/glm_invlink_*.m.
+%
+% Note that for neither link function the likelihood lik(f) is log concave.
 % 
 % The hyperparameters are:
 %
 % hyp = [  log(phi)  ]
 %
-% We provide two inverse link functions 'logit' and 'expexp':
-%
-%   g(f) = 1/(1+exp(-f)) and g(f) = exp(-exp(-f))).
-%
-% The link functions are located at util/glm_invlink_*.m.
-%
-% Note that for neither link function the likelihood lik(f) is log concave.
-%
 % Several modes are provided, for computing likelihoods, derivatives and moments
 % respectively, see likFunctions.m for the details. In general, care is taken
 % to avoid numerical issues when the arguments are extreme.
 %
-% See also LIKFUNCTIONS
-
+% See also LIKFUNCTIONS.M.
+%
 % Copyright (c) by Hannes Nickisch, 2014-03-04.
 
 if nargin<4, varargout = {'1'}; return; end   % report number of hyperparameters

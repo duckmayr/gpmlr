@@ -1,4 +1,3 @@
-function priorDistributions ()
 % prior distributions to be used for hyperparameters of Gaussian processes
 % using infPrior.
 % There are two different kinds of prior distributions: simple and composite:
@@ -27,9 +26,6 @@ function priorDistributions ()
 %   priorClampedMulti or - fix hyperparameter to its current value by setting
 %   priorDeltaMulti     derivatives to zero, no effect on marginal likelihood
 %
-%   priorEqualMulti or   - make several hyperparameters have the same value by
-%   priorSameMulti      same derivative, no effect on marginal likelihood
-%
 % composite prior distributions (see explanation at the bottom):
 %
 %   priorMix             - nonnegative mixture of priors
@@ -52,9 +48,7 @@ function priorDistributions ()
 % The function returns the log density at location t along with its first
 % derivative.
 %
-% See also INFPRIOR, USAGEPRIOR
-
-% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2018-08-01.
-
-help priorDistributions
-return
+% See also doc/usagePrior.m, inf/infPrior.m.
+%
+% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2015-07-13.
+%                                      File automatically generated using noweb.

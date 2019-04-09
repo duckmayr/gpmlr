@@ -1,4 +1,3 @@
-function likFunctions ()
 % likelihood functions are provided to be used by the gp.m function:
 %
 %   likErf         (Error function, classification, probit regression)
@@ -13,13 +12,12 @@ function likFunctions ()
 %   likT           (Student's t, regression)
 %
 %   likPoisson     (Poisson regression, count data)
-%   likNegBinom    (Negativ binomial regression, count data)
 %   likGamma       (Nonnegative regression, positive data)
 %   likExp         (Nonnegative regression, positive data)
 %   likInvGauss    (Nonnegative regression, positive data)
 %   likBeta        (Beta regression, interval data)
 %
-%   likMix         (Mixture of individual likelihood functions)
+%   likMix         (Mixture of individual covariance functions)
 %
 % The likelihood functions have three possible modes, the mode being selected
 % as follows (where "lik" stands for any likelihood function in "lik/lik*.m".):
@@ -101,10 +99,5 @@ function likFunctions ()
 % See the help for the individual likelihood for the computations specific to
 % each likelihood function.
 %
-% See also USAGELIK
-
-% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2018-08-01.
-
-help likFunctions
-return
-
+% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2015-07-13.
+%                                      File automatically generated using noweb.

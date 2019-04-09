@@ -1,4 +1,4 @@
-function [m,dm] = meanScale(mean, hyp, x)
+function A = meanScale(mean, hyp, x, i)
 
 % meanScale - compose a mean function as a scaled version of another one.
 %
@@ -12,15 +12,22 @@ function [m,dm] = meanScale(mean, hyp, x)
 % This function doesn't actually compute very much on its own, it merely does
 % some bookkeeping, and calls other mean functions to do the actual work.
 %
-% Copyright (c) by Carl Edward Rasmussen & Hannes Nickisch 2016-04-15.
+% Copyright (c) by Carl Edward Rasmussen & Hannes Nickisch 2014-11-01.
 %
-% See also MEANFUNCTIONS
+% See also MEANFUNCTIONS.M.
 
 if nargin<3                                        % report number of parameters
-  m = [feval(mean{:}),'+1']; return
+  A = [feval(mean{:}),'+1']; return
 end
 
+[n,D] = size(x);
 a = hyp(1);
-[m0,dm0] = feval(mean{:},hyp(2:end),x);                            % evaluate m0
-m = a*m0;                                                                 % mean
-dm = @(q) [m0'*q(:); a*dm0(q)];                         % directional derivative
+if nargin==3                                               % compute mean vector
+  A = a*feval(mean{:},hyp(2:end),x);
+else                                                 % compute derivative vector
+  if i==1
+    A = feval(mean{:},hyp(2:end),x);
+  else
+    A = a*feval(mean{:},hyp(2:end),x,i-1);
+  end
+end

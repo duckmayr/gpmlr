@@ -34,7 +34,7 @@ function [varargout] = likGaussWarp(warp, hyp, y, mu, varargin)
 %
 % Copyright (c) by Hannes Nickisch, 2013-10-24.
 %
-% See also LIKFUNCTIONS
+% See also LIKFUNCTIONS.M.
 
 lik = {@likGauss}; % in principle any likelihood function can be warped but only
 % for homoscedastic likelihoods, in particular Gaussian has feasible integrals

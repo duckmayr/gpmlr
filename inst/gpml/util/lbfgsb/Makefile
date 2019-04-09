@@ -5,7 +5,7 @@
 ### 1) Choose Matlab configuration ############################################
 ### path to your Matlab installation
 ### you can find it by the commands 'locate matlab' or 'find / -name "matlab"'
-MATLAB_HOME=/usr/local/share/matlab
+MATLAB_HOME=/usr/local/bin/matlab
 ### For 32 bit Linux, uncomment the following three lines. --------------------
 MEX        = $(MATLAB_HOME)/bin/mex
 MEX_SUFFIX = mexglx
@@ -35,7 +35,7 @@ LIBS =
 #LIBS = -lblas
 
 ### 4) Choose FORTRAN compiler ################################################
-FFLAGS = -O3 -fPIC -fexceptions -Wall -Wno-uninitialized
+FFLAGS = -O3 -fPIC -fexceptions -Wall -g -Wno-uninitialized
 ### To work with f77, uncomment the following two lines. ----------------------
 #F77         = f77
 #FORTRAN_LIB = g2c
@@ -45,8 +45,7 @@ FORTRAN_LIB = gfortran
 
 ### 5) Choose C++ compiler ####################################################
 CXX    = g++
-CFLAGS = -O3 -fPIC -pthread -Wall -Werror -ansi -ffast-math \
-	 -fomit-frame-pointer -std=c++11
+CFLAGS = -O3 -fPIC -pthread -Wall -Werror -ansi -ffast-math -fomit-frame-pointer
 
 ### 6) If you need to specify extra directories where to look for libraries, 
 ### write the paths of the directories, separated by a white space
@@ -88,7 +87,7 @@ $(TARGET)_nomex: $(OBJS)
 	$(CXX) $^ -shared -o $(TARGET).$(MEX_SUFFIX) $(MATLAB_LIB) $(addprefix -L,$(LIBDIRS)) -l$(FORTRAN_LIB) -lm
 
 $(TARGET)_octave: $(OBJS)
-	$(OCT) --mex -o $(TARGET).mex $^ $(LIBS)
+	$(OCT) --mex -o $(TARGET).mex $^ $(LIBS)$
 
 
 copy:

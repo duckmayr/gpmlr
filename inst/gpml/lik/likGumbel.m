@@ -17,7 +17,7 @@ function [varargout] = likGumbel(sign, hyp, y, mu, s2, inf, i)
 %
 % Copyright (c) by Hannes Nickisch, 2013-11-01.
 %
-% See also LIKFUNCTIONS
+% See also LIKFUNCTIONS.M.
 
 if nargin<4, varargout = {'1'}; return; end   % report number of hyperparameters
 if sign=='-', s = -1; else s = 1; end                 % extract sign of skewness

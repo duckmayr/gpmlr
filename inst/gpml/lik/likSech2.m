@@ -18,7 +18,7 @@ function [varargout] = likSech2(hyp, y, mu, s2, inf, i)
 %
 % Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-09-02.
 %
-% See also LIKFUNCTIONS, LIKLOGISTIC
+% See also LIKFUNCTIONS.M, LIKLOGISTIC.M.
 
 if nargin<3, varargout = {'1'}; return; end   % report number of hyperparameters
 

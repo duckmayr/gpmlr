@@ -12,7 +12,7 @@ function [varargout] = likLogistic(hyp, y, mu, s2, inf, i)
 %
 % Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-09-02.
 %
-% See also LIKFUNCTIONS
+% See also LIKFUNCTIONS.M.
 
 if nargin<3, varargout = {'0'}; return; end   % report number of hyperparameters
 if nargin>1, y = sign(y); y(y==0) = 1; else y = 1; end % allow only +/- 1 values

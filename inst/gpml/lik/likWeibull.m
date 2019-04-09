@@ -1,50 +1,30 @@
 function [varargout] = likWeibull(link, hyp, y, mu, s2, inf, i)
-% LIKWEIBULL Weibull likelihood function for strictly positive data Y.
+
+% likWeibull - Weibull likelihood function for strictly positive data y. The
+% expression for the likelihood is 
+%   likWeibull(f) = g1*ka/mu * (g1*y/mu)^(ka-1) * exp(-(g1*y/mu)^ka) with
+% gj = gamma(1+j/ka), mean=mu and variance=mu^2*(g2/g1^2-1) where mu = g(f) is
+% the Weibull intensity, f is a Gaussian process, y is the positive data.
+% Hence, we have llik(f) = log(likWeibull(f)) = 
+%                            log(g1*ka/mu) + (ka-1)*log(g1*y/mu) - (g1*y/mu)^ka.
 %
-% Report number of hyperparameters
-%  S = LIKWEIBULL ()
-%  S = LIKWEIBULL (LINK)
-%
-% Prediction mode
-%   LP            = LIKWEIBULL (LINK, HYP, Y, MU)
-%  [LP, YMU, YS2] = LIKWEIBULL (LINK, HYP, Y, MU, S2)
-%
-% Inference mode
-%  [VARARGOUT] = LIKWEIBULL (LINK, HYP, Y, MU, S2, INF)
-%  [VARARGOUT] = LIKWEIBULL (LINK, HYP, Y, MU, S2, INF, I)
-%
-% Call likFunctions to get an explanation of outputs in each mode.
-%
-% The expression for the likelihood is 
-%
-%  likWeibull(f) = g1 *ka / mu * (g1 * y / mu)^(ka - 1) * exp(-(g1 * y / mu)^ka)
-%
-% with gj = gamma(1 + j / ka), mean = mu and variance = mu^2 * (g2 / g1^2 - 1) 
-% where mu = g(f) is the Weibull intensity, f is a Gaussian process, y is the 
-% positive data. Hence, we have 
-%
-%  llik(f) = log(likWeibull(f)) = 
-%            log(g1 * ka / mu) + (ka - 1) * log(g1 * y / mu) - (g1 * y / mu)^ka.
-%
-% The hyperparameters are:
-%
-%  hyp = [  log(ka)  ]
-%
-% We provide two inverse LINK functions 'exp' and 'logistic':
-%
-%  g(f) = exp(f) and g(f) = log(1+exp(f))).
-%
+% We provide two inverse link functions 'exp' and 'logistic':
+%   g(f) = exp(f) and g(f) = log(1+exp(f))).
 % The link functions are located at util/glm_invlink_*.m.
 %
 % Note that for neither link function the likelihood lik(f) is log concave.
+% 
+% The hyperparameters are:
+%
+% hyp = [  log(ka)  ]
 %
 % Several modes are provided, for computing likelihoods, derivatives and moments
 % respectively, see likFunctions.m for the details. In general, care is taken
 % to avoid numerical issues when the arguments are extreme.
 %
-% See also LIKFUNCTIONS
-
-% Copyright (c) by Hannes Nickisch, 2016-10-04.
+% See also LIKFUNCTIONS.M.
+%
+% Copyright (c) by Hannes Nickisch, 2013-10-30.
 
 if nargin<4, varargout = {'1'}; return; end   % report number of hyperparameters
 
@@ -119,10 +99,8 @@ end
 % compute the log intensity using the inverse link function
 function varargout = g(f,link)
   varargout = cell(nargout, 1);  % allocate the right number of output arguments
-  if isequal(link,'exp')
+  if strcmp(link,'exp')
     [varargout{:}] = glm_invlink_exp(f);
-  elseif isequal(link,'logistic')
-    [varargout{:}] = glm_invlink_logistic(f);
   else
-    [varargout{:}] = glm_invlink_logistic2(link{2},f);
+    [varargout{:}] = glm_invlink_logistic(f);
   end

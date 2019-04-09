@@ -1,12 +1,15 @@
-function infMethods ()
 % Inference methods: Compute the (approximate) posterior for a Gaussian process.
 % Methods currently implemented include:
 %
-%   infGaussLik      Exact inference (only possible with Gaussian likelihood)
+%   infExact         Exact inference (only possible with Gaussian likelihood)
 %   infLaplace       Laplace's Approximation
 %   infEP            Expectation Propagation
 %   infVB            Variational Bayes Approximation
 %   infKL            Kullback-Leibler optimal Approximation
+%
+%   infFITC          Large scale regression with approximate covariance matrix
+%   infFITC_Laplace  Large scale inference  with approximate covariance matrix
+%   infFITC_EP       Large scale inference  with approximate covariance matrix
 %
 %   infMCMC     Markov Chain Monte Carlo and Annealed Importance Sampling
 %               We offer two samplers.
@@ -19,12 +22,11 @@ function infMethods ()
 %
 % The interface to the approximation methods is the following:
 %
-%   function [post nlZ dnlZ] = inf..(hyp, mean, cov, lik, x, y)
+%   function [post nlZ dnlZ] = inf..(hyp, cov, lik, x, y)
 %
 % where:
 %
 %   hyp      is a struct of hyperparameters
-%   mean     is the name of the mean function       (see meanFunctions.m)
 %   cov      is the name of the covariance function (see covFunctions.m)
 %   lik      is the name of the likelihood function (see likFunctions.m)
 %   x        is a n by D matrix of training inputs 
@@ -39,20 +41,14 @@ function infMethods ()
 %               and mu the approx posterior mean
 %     sW     is a (sparse or full column) vector containing diagonal of sqrt(W)
 %               the approximate posterior covariance matrix is inv(inv(K)+W)
-%     L      is a (sparse or full) triangular matrix, L = chol(sW*K*sW+eye(n)),
-%               or a full matrix, L = -inv(K+inv(W)),
-%               or a function L(A) of a matrix A such that -(K+inv(W))*L(A) = A
+%     L      is a (sparse or full) matrix, L = chol(sW*K*sW+eye(n))
 %
 % Usually, the approximate posterior to be returned admits the form
-% N(mu=m+K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal.
+% N(mu=m+K*alpha, V=inv(inv(K)+W)), where alpha is a vector and W is diagonal;
+% if not, then L contains instead -inv(K+inv(W)), and sW is unused.
 %
 % For more information on the individual approximation methods and their
-% implementations, see the separate inf??.m files.
+% implementations, see the separate inf??.m files. See also gp.m
 %
-% See also GP
-
-% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2018-08-01.
-
-help infMethods
-return
-
+% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2015-07-13.
+%                                      File automatically generated using noweb.

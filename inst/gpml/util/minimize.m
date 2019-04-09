@@ -200,7 +200,7 @@ elseif isstruct(s)
   [t v] = rewrap(struct2cell(s), v);                 % convert to cell, recurse
   s = orderfields(cell2struct(t,fieldnames(s),1),p);  % conv to struct, reorder
 elseif iscell(s)
-  for i = 1:numel(s)             % cell array elements are handled sequentially
+  for i = 1:numel(s)             % cell array elements are handled sequentially 
     [s{i} v] = rewrap(s{i}, v);
   end
 end                                             % other types are not processed

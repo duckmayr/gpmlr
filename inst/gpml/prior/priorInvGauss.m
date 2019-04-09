@@ -13,7 +13,7 @@ function [lp,dlp] = priorInvGauss(mu,lam,x)
 %
 % Copyright (c) by Roman Garnett and Hannes Nickisch, 2014-09-08.
 %
-% See also PRIORDISTRIBUTIONS
+% See also PRIORDISTRIBUTIONS.M.
 
 if nargin<2, error('mu and lam parameters need to be provided'), end
 if ~(isscalar(mu)&&isscalar(lam))

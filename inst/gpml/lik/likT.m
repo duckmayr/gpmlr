@@ -1,34 +1,15 @@
 function [varargout] = likT(hyp, y, mu, s2, inf, i)
-% LIKT Student's t likelihood function for regression.
-%
-% Report number of hyperparameters
-%  S = LIKT ()
-%  S = LIKT (HYP)
-%
-% Prediction mode
-%   LP            = LIKT (HYP, Y, MU)
-%  [LP, YMU, YS2] = LIKT (HYP, Y, MU, S2)
-%
-% Inference mode
-%  [VARARGOUT] = LIKT (HYP, Y, MU, S2, INF)
-%  [VARARGOUT] = LIKT (HYP, Y, MU, S2, INF, I)
-%
-% Call likFunctions to get an explanation of outputs in each mode.
-%
+
+% likT - Student's t likelihood function for regression. 
 % The expression for the likelihood is
-%
-%  likT(t) = Z * ( 1 + (t-y)^2 / (nu * sn^2) ).^(-(nu + 1) / 2),
-%
-% where 
-%
-% Z = gamma((nu + 1) / 2) / (gamma(nu / 2) * sqrt(nu * pi) * sn)
-%
+%   likT(t) = Z * ( 1 + (t-y)^2/(nu*sn^2) ).^(-(nu+1)/2),
+% where Z = gamma((nu+1)/2) / (gamma(nu/2)*sqrt(nu*pi)*sn)
 % and y is the mean (for nu>1) and nu*sn^2/(nu-2) is the variance (for nu>2).
 %
 % The hyperparameters are:
 %
-%  hyp = [ log(nu-1)
-%          log(sn)  ]
+% hyp = [ log(nu-1)
+%         log(sn)  ]
 %
 % Note that the parametrisation guarantees nu>1, thus the mean always exists.
 %
@@ -36,12 +17,11 @@ function [varargout] = likT(hyp, y, mu, s2, inf, i)
 % respectively, see likFunctions.m for the details. In general, care is taken
 % to avoid numerical issues when the arguments are extreme.
 %
-% See also LIKFUNCTIONS
-
-% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2016-10-01.
+% Copyright (c) by Carl Edward Rasmussen and Hannes Nickisch, 2013-09-02.
+%
+% See also LIKFUNCTIONS.M.
 
 if nargin<3, varargout = {'2'}; return; end   % report number of hyperparameters
-if ~exist('psi'), mypsi = @digamma; else mypsi = @psi; end    % no psi in Octave
 
 numin = 1;                                                 % minimum value of nu
 nu = exp(hyp(1))+numin; sn2 = exp(2*hyp(2));           % extract hyperparameters
@@ -88,7 +68,7 @@ else
     else                                                       % derivative mode
       a = r2+nu*sn2; a2 = a.*a; a3 = a2.*a;
       if i==1                                             % derivative w.r.t. nu
-        lp_dhyp =  nu*( mypsi(nu/2+1/2)-mypsi(nu/2) )/2 - 1/2 ...
+        lp_dhyp =  nu*( psi(nu/2+1/2)-psi(nu/2) )/2 - 1/2 ...
                   -nu*log(1+r2/(nu*sn2))/2 +(nu/2+1/2)*r2./(nu*sn2+r2);
         lp_dhyp = (1-numin/nu)*lp_dhyp;          % correct for lower bound on nu
         dlp_dhyp = nu*r.*( a - sn2*(nu+1) )./a2;

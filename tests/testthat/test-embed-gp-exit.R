@@ -11,30 +11,6 @@ xs <- seq(-3, 3, length.out = 61)
 ys <- sin(3 * xs) + 0.1 * rnorm(length(xs), 0.9, 1)
 hyp <- list(mean = numeric(), cov = c(0, 0), lik = -1)
 x2 <- matrix(rnorm(40, 0.8, 1), ncol = 2)
-## Now a more complex example:
-## (both this and the above example are from
-## http://www.gaussianprocess.org/gpml/code/matlab/doc/)
-n1 <- 80
-n2 <- 40
-S1 <- diag(2)
-S2 <- matrix(c(1, 0.95, 0.95, 1), nrow = 2, byrow = TRUE)
-m1 <- c( 0.75, 0)
-m2 <- c(-0.75, 0)
-set.seed(42)
-tmp <- t(chol(S1)) %*% matrix(rnorm(160, sd = 0.2), nrow = 2, ncol = n1)
-X1 <- apply(tmp, 2, '+', m1)
-tmp <- t(chol(S2)) %*% matrix(rnorm(160, sd = 0.3), nrow = 2, ncol = n2)
-X2 <- apply(tmp, 2, '+', m1)
-X <- t(cbind(X1, X2))
-Y <- matrix(c(rep(-1, n1), rep(1, n2)), ncol = 1)
-tt <- as.matrix(expand.grid(seq(-4, 4, 0.1), seq(-4, 4, 0.1)))
-u <- as.matrix(expand.grid(-2:2, -2:2))
-n <- prod(dim(tt))
-hyp2 <- list(mean = -3, cov = c(-0.2, -0.05, 1.25))
-inffunc <- "infLaplace"
-meanfunc <- "meanConst"
-covfunc <- list("apxSparse", list("covSEard"), u)
-likfunc <- "likErf"
 
 
 ## Then we run the tests:
@@ -54,10 +30,9 @@ test_that("We do not attempt re-embedding while embedded", {
                    "[1] TRUE"))
 })
 
-gp_train <- gp(hyp, "infGaussLik", "", "covSEiso", "likGauss", x, y)
-gp_pred1 <- gp(hyp, "infGaussLik", "", "covSEiso", "likGauss", x, y, xs)
-gp_pred2 <- gp(hyp, "infGaussLik", "", "covSEiso", "likGauss", x, y, xs, ys)
-gp_complex <- gp(hyp2, inffunc, meanfunc, covfunc, likfunc, X, Y, tt, rep(1, n))
+gp_train <- gp(hyp, "infExact", "", "covSEiso", "likGauss", x, y)
+gp_pred1 <- gp(hyp, "infExact", "", "covSEiso", "likGauss", x, y, xs)
+gp_pred2 <- gp(hyp, "infExact", "", "covSEiso", "likGauss", x, y, xs, ys)
 
 test_that("The gp function works properly while Octave is embedded", {
     expect_setequal(names(gp_train), c("NLZ", "DNLZ", "POST"))
@@ -80,14 +55,8 @@ test_that("The gp function works properly while Octave is embedded", {
     expect_setequal(sapply(gp_pred2, length), c(61, 3))
     expect_setequal(sapply(gp_pred2$POST, class), "matrix")
     expect_setequal(sapply(gp_pred2$POST, length), c(20, 400))
-    expect_setequal(names(gp_complex), c("YMU", "YS2", "FMU", "FS2", "LP", "POST"))
-    expect_setequal(names(gp_complex$POST), c("L", "alpha", "sW"))
-    expect_setequal(sapply(gp_complex, class), c("matrix", "list"))
-    expect_setequal(sapply(gp_complex, length), c(6561, 3))
-    expect_setequal(sapply(gp_complex$POST, class), c("matrix", "character"))
-    expect_setequal(sapply(gp_complex$POST, length), c(1, 25, 120))
-    expect_error(gp(hyp, "infGaussLik", "", "covSEiso", "likGauss", x2, y), NA)
-    expect_error(gp(hyp, "infGaussLik", "", NA, "likGauss", x, y), "Failed")
+    expect_error(gp(hyp, "infExact", "", "covSEiso", "likGauss", x2, y), NA)
+    expect_error(gp(hyp, "infExact", "", NA, "likGauss", x, y), "Failed")
 })
 
 set.seed(12321)
