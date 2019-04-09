@@ -8,11 +8,11 @@ setup_Octave <- function() {
     if ( rev(embed_octave_output)[1] == "[1] TRUE" ) {
         packageStartupMessage("Octave successfully embedded.")
         sub_dirs <- c("cov", "doc", "inf", "lik", "mean", "prior", "util",
-                      "util/sparseinv", "util/minfunc", "util/lbfgsb",
-                      "util/minfunc/compiled", "util/minfunc/mex")
+                      "util/lbfgsb")
         dirs_to_add <- system.file(paste0("gpml", c("", paste0("/", sub_dirs))),
                                    package = "gpmlr")
-        .add_to_path(dirs_to_add)
+        path_warn <- capture.output(.add_to_path(dirs_to_add))#, type = "message")
+        # .add_to_path(dirs_to_add)
         packageStartupMessage("Octave load path correctly set.")
         packageStartupMessage("gp() is safe to call.")
     } else {

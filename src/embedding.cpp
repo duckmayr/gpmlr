@@ -87,9 +87,6 @@ bool embed_octave(bool verbose, bool force) {
     }
     if ( octave_is_embedded() ) {
         has_octave_ever_been_embedded = true;
-        if ( verbose ) {
-            Rcpp::Rcout << "Octave embedded.\n";
-        }
     }
     return is_octave_embedded;
 }
