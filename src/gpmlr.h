@@ -11,6 +11,7 @@
 // ----------------------- Octave embedding ----------------------------------
 // Checks whether Octave is currently embedded:
 bool octave_is_embedded();
+bool octave_has_ever_been_embedded();
 // Embeds Octave:
 bool embed_octave(bool verbose = true, bool force = false);
 // Shuts down Octave:

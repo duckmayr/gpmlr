@@ -21,7 +21,9 @@ brew_packages:
 r_packages:
   - Rcpp
   - testthat
-  
+
+before_install: R -e 'source("https://install-github.me/r-lib/remotes")'
+
 after_success:
   - Rscript -e 'covr::codecov()'
 
