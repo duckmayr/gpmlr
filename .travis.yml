@@ -3,7 +3,7 @@
 language: R
 sudo: false
 warnings_are_errors: false
-cache: packages
+# cache: packages
 
 os:
   - linux
@@ -21,8 +21,6 @@ brew_packages:
 r_packages:
   - Rcpp
   - testthat
-
-before_install: R -e 'source("https://install-github.me/r-lib/remotes")'
 
 after_success:
   - Rscript -e 'covr::codecov()'
