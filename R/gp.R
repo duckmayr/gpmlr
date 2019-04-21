@@ -27,6 +27,12 @@ listfix <- function(x) {
 #' @param y A numeric vector of training outcomes
 #' @param xs A numeric vector or matrix of testing inputs
 #' @param ys A numeric vector of testing outcomes
+#' @param set_hyp A logical vector of length one; if TRUE,
+#'   \code{\link{set_hyperparameters}} is used to set the hyperparameters
+#'   by optimizing the likelihood (the default is FALSE)
+#' @param n_evals An integer vector of length one giving the maximum
+#'   number of iterations for hyperparamter optimization if \code{set_hyp}
+#'   is TRUE (default is 100)
 #'
 #' @return A list whose elements depend on the arguments provided to the
 #'   function call:
@@ -51,9 +57,8 @@ listfix <- function(x) {
 #'           probabilities.
 #'   }
 #' @examples
-#' ## This example are given on the GPML website.
-#' ## Here's how you can run them from R.
-#' ## First consider an example with simple mean and covariance functions:
+#' ## This example is given on the GPML website.
+#' ## Here's how you can run it from R.
 #' set.seed(123)
 #' x <- rnorm(20, 0.8, 1)
 #' y <- sin(3 * x) + 0.1 * rnorm(20, 0.9, 1)
@@ -64,7 +69,8 @@ listfix <- function(x) {
 #' plot(xs, gp_result$YMU, type = "l",
 #'      xlab = "x", ylab = "Predictive Output Mean")
 #' @export
-gp <- function(hyp, inf, mean, cov, lik, x, y, xs, ys) {
+gp <- function(hyp, inf, mean, cov, lik, x, y, xs, ys, set_hyp = FALSE,
+               n_evals = 100) {
     # Make sure Octave is embedded and set up.
     # If gpmlr is attached, this shouldn't be an issue,
     # but we check in case gpmlr::gp() is called without attaching.
@@ -83,6 +89,10 @@ gp <- function(hyp, inf, mean, cov, lik, x, y, xs, ys) {
     # Workaround for GPML bug -- make sure it's called from GPML directory
     wd <- getwd()
     .set_wd(system.file("gpml", package = "gpmlr"))
+    # (Optionally) set the hyperparameters
+    if ( set_hyp ) {
+        hyp <- set_hyperparameters(hyp, inf, mean, cov, lik, x, y, n_evals)
+    }
     # Call the appropriate form of gp()
     if ( missing(xs) ) {
         result <- .gpml1(hyp, inf, mean, cov, lik, x, y)
@@ -91,6 +101,12 @@ gp <- function(hyp, inf, mean, cov, lik, x, y, xs, ys) {
     } else {
         result <- .gpml3(hyp, inf, mean, cov, lik, x, y, xs, ys)
     }
+    # Set attributes of the result
+    attr(result, 'hyp')  <- hyp
+    attr(result, 'inf')  <- inf
+    attr(result, 'mean') <- mean
+    attr(result, 'cov')  <- cov
+    attr(result, 'lik')  <- lik
     # Reset working directory and return
     setwd(wd)
     return(result)

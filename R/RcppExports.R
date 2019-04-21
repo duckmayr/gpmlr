@@ -41,3 +41,7 @@
     invisible(.Call(`_gpmlr_set_wd`, x))
 }
 
+.set_hyperparameters <- function(hyp, inf, mean, cov, lik, x, y, n_evals) {
+    .Call(`_gpmlr_set_hyperparameters`, hyp, inf, mean, cov, lik, x, y, n_evals)
+}
+

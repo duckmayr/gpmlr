@@ -4,7 +4,8 @@
 \alias{gp}
 \title{Gaussian Process Inference and Prediction}
 \usage{
-gp(hyp, inf, mean, cov, lik, x, y, xs, ys)
+gp(hyp, inf, mean, cov, lik, x, y, xs, ys, set_hyp = FALSE,
+  n_evals = 100)
 }
 \arguments{
 \item{hyp}{A list of length three giving the hyperparameters for the mean,
@@ -25,6 +26,14 @@ covariance, and likelihood functions}
 \item{xs}{A numeric vector or matrix of testing inputs}
 
 \item{ys}{A numeric vector of testing outcomes}
+
+\item{set_hyp}{A logical vector of length one; if TRUE,
+\code{\link{set_hyperparameters}} is used to set the hyperparameters
+by optimizing the likelihood (the default is FALSE)}
+
+\item{n_evals}{An integer vector of length one giving the maximum
+number of iterations for hyperparamter optimization if \code{set_hyp}
+is TRUE (default is 100)}
 }
 \value{
 A list whose elements depend on the arguments provided to the
@@ -61,9 +70,8 @@ Matlab function. Their detailed manual is available at
 \url{http://www.gaussianprocess.org/gpml/code/matlab/doc/manual.pdf}.
 }
 \examples{
-## This example are given on the GPML website.
-## Here's how you can run them from R.
-## First consider an example with simple mean and covariance functions:
+## This example is given on the GPML website.
+## Here's how you can run it from R.
 set.seed(123)
 x <- rnorm(20, 0.8, 1)
 y <- sin(3 * x) + 0.1 * rnorm(20, 0.9, 1)

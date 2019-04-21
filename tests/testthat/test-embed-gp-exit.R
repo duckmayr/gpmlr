@@ -30,7 +30,7 @@ test_that("We do not attempt re-embedding while embedded", {
                    "[1] TRUE"))
 })
 
-gp_train <- gp(hyp, "infExact", "", "covSEiso", "likGauss", x, y)
+gp_train <- gp(hyp, "infExact", "", "covSEiso", "likGauss", x, y, set_hyp = TRUE)
 gp_pred1 <- gp(hyp, "infExact", "", "covSEiso", "likGauss", x, y, xs)
 gp_pred2 <- gp(hyp, "infExact", "", "covSEiso", "likGauss", x, y, xs, ys)
 

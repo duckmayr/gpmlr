@@ -131,6 +131,24 @@ BEGIN_RCPP
     return R_NilValue;
 END_RCPP
 }
+// set_hyperparameters
+Rcpp::List set_hyperparameters(Rcpp::List hyp, Rcpp::List inf, Rcpp::List mean, Rcpp::List cov, Rcpp::List lik, Rcpp::NumericVector x, Rcpp::NumericVector y, int n_evals);
+RcppExport SEXP _gpmlr_set_hyperparameters(SEXP hypSEXP, SEXP infSEXP, SEXP meanSEXP, SEXP covSEXP, SEXP likSEXP, SEXP xSEXP, SEXP ySEXP, SEXP n_evalsSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::RNGScope rcpp_rngScope_gen;
+    Rcpp::traits::input_parameter< Rcpp::List >::type hyp(hypSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type inf(infSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type mean(meanSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type cov(covSEXP);
+    Rcpp::traits::input_parameter< Rcpp::List >::type lik(likSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type x(xSEXP);
+    Rcpp::traits::input_parameter< Rcpp::NumericVector >::type y(ySEXP);
+    Rcpp::traits::input_parameter< int >::type n_evals(n_evalsSEXP);
+    rcpp_result_gen = Rcpp::wrap(set_hyperparameters(hyp, inf, mean, cov, lik, x, y, n_evals));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_gpmlr_octave_is_embedded", (DL_FUNC) &_gpmlr_octave_is_embedded, 0},
@@ -143,6 +161,7 @@ static const R_CallMethodDef CallEntries[] = {
     {"_gpmlr_print_path", (DL_FUNC) &_gpmlr_print_path, 0},
     {"_gpmlr_add_to_path", (DL_FUNC) &_gpmlr_add_to_path, 1},
     {"_gpmlr_set_wd", (DL_FUNC) &_gpmlr_set_wd, 1},
+    {"_gpmlr_set_hyperparameters", (DL_FUNC) &_gpmlr_set_hyperparameters, 8},
     {NULL, NULL, 0}
 };
 

@@ -2,6 +2,7 @@
 
 export(bald_score)
 export(gp)
+export(set_hyperparameters)
 importFrom(Rcpp,sourceCpp)
 importFrom(stats,pnorm)
 importFrom(utils,capture.output)
