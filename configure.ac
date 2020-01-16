@@ -22,6 +22,13 @@ octave_libs=$(mkoctfile --print OCTAVE_LIBS)
 AC_MSG_RESULT([])
 AC_MSG_CHECKING([necessary -L additions to PKG_LIBS for the Octave API])
 octave_lflags=$(mkoctfile --print LFLAGS)
+octave_lflags+=" "
+octave_lflags+=$(mkoctfile --print LDFLAGS)
+octave_lflags+=" "
+tmp_lflags=$(mkoctfile --print OCTLIBDIR)
+if test x"$octave_lflags" != x"" ; then
+    octave_lflags="${octave_lflags} -L${tmp_lflags}"
+fi
 AC_MSG_RESULT([])
 
 # Substitute things where appropriate in Makevars
